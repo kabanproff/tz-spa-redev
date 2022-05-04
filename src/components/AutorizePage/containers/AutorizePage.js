@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { withFormik } from 'formik'
-// import { useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { getUser } from '../../../redux/reducers/userSlice';
 // import { authorization } from '../../../redux/actions/user';
 
 
@@ -8,7 +9,7 @@ import AuthorizePage from '../components/AuthorizePage'
 
 
 export default withFormik({
-	mapPropsToValues: () => ({ login: '', password: '' }),
+	mapPropsToValues: () => ({ login: '', password: 'qqqqqQ1!' }),
 	validate: values => {
 		const errors = {};
 
@@ -31,29 +32,30 @@ export default withFormik({
 		return errors;
 	},
 
-	handleSubmit: (values, { setErrors, setSubmitting }) => {
+	// handleSubmit: (values, { setErrors, setSubmitting }) => {
+	// const dispatch = useDispatch()
+	// dispatch(getUser(values))
+	// return authorization(values, { setErrors, setSubmitting})
 
-		// return authorization(values, { setErrors, setSubmitting})
+	// return
+	// (
+	// 	async (dispatch) => {
+	// 		try {
+	// 			console.log(values)
 
-		// return
-		(
-			async (dispatch) => {
-				try {
-					console.log(values)
+	// 			const { data } = await axios.post('https://typ-back.herokuapp.com/api/auth/login', values)
+	// 			if (data.message) {
+	// 				setErrors({ login: "Проверьте правильность ввода логина либо пароля" })
+	// 			}
+	// 			console.log(data)
 
-					const { data } = await axios.post('https://typ-back.herokuapp.com/api/auth/login', values)
-					if (data.message) {
-						setErrors({ login: "Проверьте правильность ввода логина либо пароля" })
-					}
-					console.log(data)
-
-					setSubmitting(false);
-				} catch (error) {
-					// alert(error)
-					console.log(error)
-				}
-			})()
-	},
+	// 			setSubmitting(false);
+	// 		} catch (error) {
+	// 			// alert(error)
+	// 			console.log(error)
+	// 		}
+	// 	})()
+	// },
 	displayName: 'BasicForm',
 })(AuthorizePage)
 

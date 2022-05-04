@@ -52,6 +52,8 @@ const columns = [
 		title: 'Дата старта',
 		key: 'date',
 		dataIndex: 'createdAt',
+		defaultSortOrder: 'ascend',
+		// showSorterTooltip: (e) => console.log(e),//{ title: 'Сортировать по дате старта' },
 		sorter: (a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt),
 		render: strDate => {
 			const getCurDate = (date) => date < 10 ? `0${date}` : date
@@ -205,9 +207,11 @@ const data = [
 
 
 const CustomTable = () => {
+
 	return (
 		<>
-			<Table columns={columns} dataSource={data} />
+
+			<Table columns={columns} dataSource={data} scroll={{ y: '56vh' }} />
 		</>
 	)
 }

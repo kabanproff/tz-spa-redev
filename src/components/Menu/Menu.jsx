@@ -2,7 +2,7 @@ import React from 'react'
 
 import './Menu.less'
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const Menu = () => {
 
@@ -27,20 +27,32 @@ const Menu = () => {
 					className={classNames('menu__item', {
 						active: visibleItems
 					})}>
-					<Link to={'home'} >
+					<NavLink to={'/'} >
 						<div className={'item__block'}>
 							<span>Все пользователи</span>
 							<i className={'item__arrow'}></i>
 						</div>
-					</Link>
+					</NavLink>
 					<ul>
 						<li>
-							Динамика студентов
+							<div className={'item__block'}>
+								<span>Динамика студентов</span>
+							</div>
 						</li>
-						<li>Рейтинг благодарности</li>
+						<li>
+							<div className={'item__block'}>
+								<span>Рейтинг благодарности</span>
+							</div>
+						</li>
 					</ul>
 				</li>
-				<li className={'menu__item'} ><Link to={'moduls'} >Модули</Link> </li>
+				<li className={'menu__item'} >
+					<NavLink to={'moduls'} >
+						<div className={'item__block'}>
+							<span>Модули</span>
+						</div>
+					</NavLink>
+				</li>
 			</ul>
 		</div>
 	)
