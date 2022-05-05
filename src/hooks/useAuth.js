@@ -1,11 +1,15 @@
 import { useSelector } from "react-redux"
 
 export function useAuth() {
-	const { isAdmin, token, loading } = useSelector(state => state.user)
+	const {
+		// isAdmin,
+		//  token,
+		loading } = useSelector(state => state.user)
+	const token = localStorage.getItem('token')
 	return {
-		isAdmin,
+		isAdmin: localStorage.getItem('isAdmin'),
+		token,
 		isAuth: !!token,
 		loading,
-		token
 	}
 } 

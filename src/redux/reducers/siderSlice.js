@@ -13,7 +13,7 @@ function getItem(label, key, icon) {
 	}
 }
 
-const itemsElseCollapsed = (collapsed) => collapsed ? getItems('label', 'key', 'icon') : getItems('label', 'key')
+// const itemsElseCollapsed = (collapsed) => collapsed ? getItems('label', 'key', 'icon') : getItems('label', 'key')
 
 
 const initialState = [
@@ -31,8 +31,8 @@ export const siderSlice = createSlice({
 		// 		label, key, icon
 		// 	}
 		// },
-		getItems(state, { icon }) {
-			return state.map(i => icon ? getItem(...i) : getItem(...i.slice(0, 2)))
+		getItems(state, { payload }) {
+			return state.map(i => payload.icon ? getItem(...i) : getItem(...i.slice(0, 2)))
 		}
 	}
 })

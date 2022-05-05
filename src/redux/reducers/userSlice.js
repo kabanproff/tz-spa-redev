@@ -4,7 +4,7 @@ import axios from 'axios'
 const initialState = {
 	isAdmin: false,
 	token: null,
-	loading: false
+	loading: false,
 }
 
 export const getUser = createAsyncThunk(
@@ -13,6 +13,7 @@ export const getUser = createAsyncThunk(
 		const { data } = await axios.post('https://typ-back.herokuapp.com/api/auth/login', values)
 		dispatch(setUser(data))
 		localStorage.setItem('token', data.token);
+		localStorage.setItem('isAdmin', data.isAdmin)
 	}
 )
 

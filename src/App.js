@@ -3,11 +3,12 @@ import './App.css';
 import AuthorizePage from './components/AutorizePage';
 import Home from './components/Home/Home';
 import { useAuth } from './hooks/useAuth';
-// import Moduls from './components/Moduls/Module';
+
 
 
 function App() {
-	const { isAuth } = useAuth()
+	// const { isAuth } = useAuth()
+	const isAuth = localStorage.getItem('token')
 	console.log("isAuth", isAuth)
 	return (
 		<div className="App">
