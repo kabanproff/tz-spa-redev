@@ -1,54 +1,28 @@
 import React from 'react'
-import { Form, Input, Button, Image, Typography } from 'antd';
+import { Form, Input, Button, Typography } from 'antd';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom'
-import { store } from '../../../redux/store';
 
-import { getUser, userSlice } from '../../../redux/reducers/userSlice';
+import { getUser } from '../../../redux/reducers/userAuthSlice';
 
 import AuthImage from '../../../assets/img/AuthorizeImage'
 
 import './AuthorizePage.less'
 import Logo from '../../Logo/Logo';
 import { useAuth } from '../../../hooks/useAuth';
-window.store = store
+
 const { Title } = Typography;
 
 function AuthorizePage({
 	values,
-	touched,
 	errors,
 	handleChange,
-
 	handleSubmit,
-	isValid,
-	isValidating,
 	dirty,
-	isSubmitting
 }) {
 
 	const dispatch = useDispatch()
-	const { isAuth, loading } = useAuth()
-	const navigate = useNavigate()
+	const { loading } = useAuth()
 
-	console.log('store', store.getState())
-	// userSlice.actions.setUser({ isAdmin: true, token: 'dgskjgosdfgjdflg' })
-	// console.log(userSlice)
-	// console.log(userSlice.actions.logout('deer', 'dfd', 'dsgsssss'))
-	// console.log(userSlice.actions.setUser('deerka', 111, 232))
-	console.log('----------------dirty-------------', dirty)
-	console.log('values', values)
-	console.log('errors', errors)
-	console.log('touched', touched)
-	console.log('isSubmitting', isSubmitting)
-	console.log('isValid', isValid)
-	console.log('isValidating', isValidating)
-
-	React.useEffect(
-		() => {
-			if (isAuth) navigate('/')
-		}, [isAuth]
-	)
 	return (
 		<div className={'authorize-wrapper'}>
 			<header className={'header'}>

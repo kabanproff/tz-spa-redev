@@ -6,18 +6,15 @@ import {
 } from 'antd';
 import { BellFilled, TeamOutlined, AppstoreOutlined, LogoutOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
+import { useDispatch } from 'react-redux';
 
 import Logo from '../Logo/Logo';
 import './Sider.less'
 import { NavLink } from 'react-router-dom';
+import { logout } from '../../redux/reducers/userAuthSlice';
 
 const { Sider: AntSider } = Layout;
 
-// const items = [
-// 	['Все пользователи', '1', <TeamOutlined />, '/'],
-// 	['Модули', '2', <AppstoreOutlined />, 'moduls'],
-// 	['Выйти', '3', <LogoutOutlined />, '/autorization']
-// ]
 const items = [
 	[<NavLink to={'/'} >Все пользователи</NavLink>, '1', <TeamOutlined />,],
 	[<NavLink to={'moduls'} >Модули</NavLink>, '2', <AppstoreOutlined />,],
@@ -32,7 +29,7 @@ function getItem(label, key, icon) {
 	return {
 		label,
 		key,
-		icon
+		icon,
 	}
 }
 
@@ -42,6 +39,7 @@ const Sider = () => {
 
 	const [collapsed, setCollapsed] = React.useState(false)
 	const [isBroken, setIsBroken] = React.useState(false)
+	const dispatch = useDispatch()
 
 
 	const onCollapse = (collapsed, type) => {
@@ -55,12 +53,12 @@ const Sider = () => {
 	}
 
 	const onClick = (e) => {
-		console.log(e)
+		e.key === '3' && dispatch(logout())
 	}
 
 	return (
 		<AntSider
-			onClick={onClick}
+
 			width={215}
 			className='sider'
 			collapsible={isBroken}
@@ -90,7 +88,8 @@ const Sider = () => {
 							console.log('key', key, key === 0)
 							return <Menu
 								key={key}
-
+								onClick={onClick}
+								// onSelect={onClick}
 								items={
 									key === 0 ? itemsElseCollapsed(collapsed).slice(0, -1)
 										: [getItems('icon')[2]]

@@ -1,12 +1,12 @@
 import React from 'react'
 import { Layout, Menu, Button, PageHeader, Input } from 'antd';
-import { TeamOutlined, AppstoreOutlined, LogoutOutlined } from '@ant-design/icons';
+import { TeamOutlined, AppstoreOutlined, LogoutOutlined, SearchOutlined } from '@ant-design/icons';
 
-import './Home.less'
+import s from './Home.module.less'
 
 import CustomTable from '../Table/Table';
 import { Route, Routes } from 'react-router-dom';
-import Moduls from '../Moduls/Module';
+import Moduls from '../Moduls/Moduls';
 import Sider from '../Sider/Sider';
 
 const { Header, Content } = Layout;
@@ -35,11 +35,9 @@ const Home = () => {
 			<Routes>
 				<Route index element={
 
-					<Layout
-						className="content__layout"
-					>
+					<Layout>
 						<Header
-							className="content__header"
+							className={s.content__header}
 						>
 							<Menu
 								defaultSelectedKeys={['1']}
@@ -48,7 +46,7 @@ const Home = () => {
 								items={items2} />
 						</Header>
 						<Content >
-							<div className={'content'}>
+							<div className={s.content}>
 								<PageHeader
 									className="site-page-header"
 									title="Таблица пользователей"
@@ -56,7 +54,7 @@ const Home = () => {
 										<Button key="1" type="primary">
 											Добавить студента
 										</Button>,
-										<Input key="2" />,
+										<Input key="2" placeholder={'Поиск'} suffix={<SearchOutlined />} />,
 									]}
 								/>
 								<CustomTable />

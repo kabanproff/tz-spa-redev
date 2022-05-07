@@ -1,53 +1,57 @@
 import React from 'react'
 import { Table, Tag, Space } from 'antd'
 import { Link } from 'react-router-dom';
+import { useGetUsersFullQuery } from '../../redux/reducers/usersApi';
 
 const modules = ['JS', 'Node', 'Базы данных', 'HTML/CSS', 'React',]
 
 const columns = [
 	{
 		title: 'Имя Фамилия',
-		dataIndex: 'fullName',
-		key: 'fullName',
+		// dataIndex: 'firstName',
+		key: 'id',
 		editable: true,
-		render: text => <Link to={':id'}>{text}</Link>
+		render: (_, item,) => {
+			console.log(_, item)
+			return <Link key={item.id} to={':id'}>{item.firstName + ' ' + item.lastName}</Link>
+		}
 	},
-	{
-		title: 'Название модуля',
-		key: 'modules',
-		dataIndex: 'modules',
-		editable: true,
-		filters: modules.map(module => ({ text: module, value: module })),
-		onFilter: (value, record) => record.modules.indexOf(value) === 0
-		,
-		render: modules => (
-			<>
-				{modules.map(tag => {
-					let color;
-					if (tag === 'Базы данных') {
-						color = 'darkorange';
-					}
-					if (tag === 'HTML/CSS') {
-						color = 'volcano';
-					}
-					if (tag === 'React') {
-						color = 'geekblue';
-					}
-					if (tag === 'Node') {
-						color = 'green'
-					}
-					if (tag === 'JS') {
-						color = 'blueviolet'
-					}
-					return (
-						<Tag color={color} key={tag}>
-							{tag}
-						</Tag>
-					);
-				})}
-			</>
-		),
-	},
+	// {
+	// 	title: 'Название модуля',
+	// 	key: 'modules',
+	// 	dataIndex: 'modules',
+	// 	editable: true,
+	// 	filters: modules.map(module => ({ text: module, value: module })),
+	// 	onFilter: (value, record) => record.modules.indexOf(value) === 0
+	// 	,
+	// 	render: modules => (
+	// 		<>
+	// 			{modules.map(tag => {
+	// 				let color;
+	// 				if (tag === 'Базы данных') {
+	// 					color = 'darkorange';
+	// 				}
+	// 				if (tag === 'HTML/CSS') {
+	// 					color = 'volcano';
+	// 				}
+	// 				if (tag === 'React') {
+	// 					color = 'geekblue';
+	// 				}
+	// 				if (tag === 'Node') {
+	// 					color = 'green'
+	// 				}
+	// 				if (tag === 'JS') {
+	// 					color = 'blueviolet'
+	// 				}
+	// 				return (
+	// 					<Tag color={color} key={tag}>
+	// 						{tag}
+	// 					</Tag>
+	// 				);
+	// 			})}
+	// 		</>
+	// 	),
+	// },
 	{
 		title: 'Дата старта',
 		key: 'date',
@@ -75,27 +79,52 @@ const columns = [
 	},
 ];
 
-const data = [
+
+
+
+const CustomTable = () => {
+
+	const { data, isLoading } = useGetUsersFullQuery()
+	// const newData = data && data.map(i => ({ ...i, key: i.id }))
+	// console.log(newData)
+	console.log(data)
+	return (
+		<>
+			{
+				isLoading ? <h1>Loading</h1> :
+					<Table columns={columns} dataSource={data} scroll={{ y: '56vh' }} />
+			}
+		</>
+	)
+}
+
+export default CustomTable
+
+
+
+
+
+const dataaaa = [
 	{
-		key: '1',
+		// key: '1',
 		fullName: 'Юра Лисовский',
 		createdAt: "2021-10-10T08:15:54.206Z",
 		modules: ['React', 'JS'],
 	},
 	{
-		key: '2',
+		// key: '2',
 		fullName: 'Алексей Попов',
 		createdAt: "2020-10-10T08:15:54.206Z",
 		modules: ['Node'],
 	},
 	{
-		key: '3',
+		// key: '3',
 		fullName: 'Дмитрий Силицкий',
 		createdAt: "2020-04-01T08:15:54.206Z",
 		modules: ['JS'],
 	},
 	{
-		key: '4',
+		// key: '4',
 		fullName: 'Алексей Гатилов',
 		createdAt: "2021-09-20T08:15:54.206Z",
 		modules: ['Node', 'JS'],
@@ -204,16 +233,3 @@ const data = [
 	},
 
 ];
-
-
-const CustomTable = () => {
-
-	return (
-		<>
-
-			<Table columns={columns} dataSource={data} scroll={{ y: '56vh' }} />
-		</>
-	)
-}
-
-export default CustomTable

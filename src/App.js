@@ -1,14 +1,23 @@
+import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import AuthorizePage from './components/AutorizePage';
 import Home from './components/Home/Home';
+import { useNavigate } from 'react-router-dom'
+
 import { useAuth } from './hooks/useAuth';
 
 
 
 function App() {
-	// const { isAuth } = useAuth()
-	const isAuth = localStorage.getItem('token')
+	const { isAuth } = useAuth()
+	const navigate = useNavigate()
+
+	React.useEffect(
+		() => {
+			if (isAuth) navigate('/')
+		}, [isAuth])
+
 	console.log("isAuth", isAuth)
 	return (
 		<div className="App">
