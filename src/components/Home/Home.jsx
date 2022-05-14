@@ -36,7 +36,7 @@ const Home = () => {
 				<Route index element={
 
 					<Layout>
-						<Header
+						{/* <Header
 							className={s.content__header}
 						>
 							<Menu
@@ -44,7 +44,7 @@ const Home = () => {
 								className={'header__menu'}
 								mode="horizontal"
 								items={items2} />
-						</Header>
+						</Header> */}
 						<Content >
 							<div className={s.content}>
 								<PageHeader

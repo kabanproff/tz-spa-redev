@@ -2,7 +2,7 @@ import React from 'react'
 import { Form, Input, Button, Typography } from 'antd';
 import { useDispatch } from 'react-redux';
 
-import { getUser } from '../../../redux/reducers/userAuthSlice';
+import { getUserAuth } from '../../../redux/reducers/userAuthSlice';
 
 import AuthImage from '../../../assets/img/AuthorizeImage'
 
@@ -91,7 +91,7 @@ function AuthorizePage({
 								type="primary"
 								loading={loading}
 								onClick={() => {
-									dispatch(getUser(values))
+									dispatch(getUserAuth(values))
 								}}
 
 							>

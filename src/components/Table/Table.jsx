@@ -1,9 +1,11 @@
 import React from 'react'
 import { Table, Tag, Space } from 'antd'
 import { Link } from 'react-router-dom';
-import { useGetUsersFullQuery } from '../../redux/reducers/usersApi';
+import { useGetUsersQuery, useGetModulesQuery } from '../../redux/reducers/usersApi';
+import { useDispatch } from 'react-redux';
+import { getUsersFullData } from '../../redux/reducers/usersSlice';
 
-const modules = ['JS', 'Node', 'Базы данных', 'HTML/CSS', 'React',]
+// const modules = ['JS', 'Node', 'Базы данных', 'HTML/CSS', 'React',]
 
 const columns = [
 	{
@@ -12,46 +14,33 @@ const columns = [
 		key: 'id',
 		editable: true,
 		render: (_, item,) => {
-			console.log(_, item)
+			// console.log(_, item)
 			return <Link key={item.id} to={':id'}>{item.firstName + ' ' + item.lastName}</Link>
 		}
 	},
-	// {
-	// 	title: 'Название модуля',
-	// 	key: 'modules',
-	// 	dataIndex: 'modules',
-	// 	editable: true,
-	// 	filters: modules.map(module => ({ text: module, value: module })),
-	// 	onFilter: (value, record) => record.modules.indexOf(value) === 0
-	// 	,
-	// 	render: modules => (
-	// 		<>
-	// 			{modules.map(tag => {
-	// 				let color;
-	// 				if (tag === 'Базы данных') {
-	// 					color = 'darkorange';
-	// 				}
-	// 				if (tag === 'HTML/CSS') {
-	// 					color = 'volcano';
-	// 				}
-	// 				if (tag === 'React') {
-	// 					color = 'geekblue';
-	// 				}
-	// 				if (tag === 'Node') {
-	// 					color = 'green'
-	// 				}
-	// 				if (tag === 'JS') {
-	// 					color = 'blueviolet'
-	// 				}
-	// 				return (
-	// 					<Tag color={color} key={tag}>
-	// 						{tag}
-	// 					</Tag>
-	// 				);
-	// 			})}
-	// 		</>
-	// 	),
-	// },
+	{
+		title: 'Название модуля',
+		key: 'module',
+		dataIndex: 'module',
+		// editable: true,
+		onFilter: (value, record) => {
+			console.log(value, record)
+			return record.module?.title === value
+		},
+		render: (module, user,) => {
+			// console.log(module, user)
+			return <>
+				{
+					module &&
+					<Tag color={module.color} key={user.key}>
+						{module.title}
+					</Tag>
+				}
+			</>
+
+
+		},
+	},
 	{
 		title: 'Дата старта',
 		key: 'date',
@@ -79,52 +68,27 @@ const columns = [
 	},
 ];
 
-
-
-
-const CustomTable = () => {
-
-	const { data, isLoading } = useGetUsersFullQuery()
-	// const newData = data && data.map(i => ({ ...i, key: i.id }))
-	// console.log(newData)
-	console.log(data)
-	return (
-		<>
-			{
-				isLoading ? <h1>Loading</h1> :
-					<Table columns={columns} dataSource={data} scroll={{ y: '56vh' }} />
-			}
-		</>
-	)
-}
-
-export default CustomTable
-
-
-
-
-
 const dataaaa = [
 	{
-		// key: '1',
+		key: '1',
 		fullName: 'Юра Лисовский',
 		createdAt: "2021-10-10T08:15:54.206Z",
 		modules: ['React', 'JS'],
 	},
 	{
-		// key: '2',
+		key: '2',
 		fullName: 'Алексей Попов',
 		createdAt: "2020-10-10T08:15:54.206Z",
 		modules: ['Node'],
 	},
 	{
-		// key: '3',
+		key: '3',
 		fullName: 'Дмитрий Силицкий',
 		createdAt: "2020-04-01T08:15:54.206Z",
 		modules: ['JS'],
 	},
 	{
-		// key: '4',
+		key: '4',
 		fullName: 'Алексей Гатилов',
 		createdAt: "2021-09-20T08:15:54.206Z",
 		modules: ['Node', 'JS'],
@@ -233,3 +197,57 @@ const dataaaa = [
 	},
 
 ];
+
+
+const CustomTable = () => {
+
+	// const dispatch = useDispatch()
+	// const { data, isLoading } = useGetUsersFullQuery()
+	const { data: users, isLoading } = useGetUsersQuery()
+	// const users = useGetUsersQuery()
+	const { data: mod } = useGetModulesQuery()
+	console.log(mod)
+	React.useEffect(() => {
+
+		columns[1].filters = mod && mod.map(({ title }) => ({ text: title, value: title }))
+	}, [mod])
+	// window.q = arr
+	// React.useEffect(() => {
+	// console.log('use-----', arr)
+	// arr && arr.then(res => console.log('thenres', console.log(res)))
+	// }, [arr])
+	console.log(users)
+	// console.log('useget', datas)
+	// const { data: data2, isLoading: isLoading2 } = useGetUserQuery(82)
+	// const usersDataModule = data.map( i => useGetUserQuery(i.id))
+	// React.useEffect(() => {
+	// try {
+	// const useGetUsersFullModule = data.map(i => dispatch(useGetUserQuery(i.id)))
+	// Promise.all[
+
+	// ].then(res => {
+	// 	console.log(res)
+	// })
+	// } catch (error) {
+	// console.log(error)
+	// }
+	// }, [])
+
+	// console.log(data, data2)
+	// console.log(isLoading, isLoading2)
+	return (
+		<>
+			{
+				isLoading ? <h1>Loading</h1> :
+					<Table columns={columns} dataSource={users} scroll={{ y: '60vh' }} />
+			}
+		</>
+	)
+}
+
+export default CustomTable
+
+
+
+
+

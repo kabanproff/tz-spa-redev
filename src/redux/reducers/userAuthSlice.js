@@ -6,11 +6,11 @@ const initialState = {
 	isAuth: !!localStorage.getItem('token')
 }
 
-export const getUser = createAsyncThunk(
+export const getUserAuth = createAsyncThunk(
 	'user/authUser',
 	async (values, { dispatch }) => {
 		const { data } = await axios.post('https://typ-back.herokuapp.com/api/auth/login', values)
-		dispatch(setUser(data))
+		dispatch(setUserAuth(data))
 
 	}
 )
@@ -20,7 +20,7 @@ export const userSlice = createSlice({
 	initialState,
 	reducers: {
 
-		setUser(state, action) {
+		setUserAuth(state, action) {
 			localStorage.setItem('token', action.payload.token);
 			localStorage.setItem('isAdmin', action.payload.isAdmin)
 			state.isAuth = !!action.payload.token
@@ -33,19 +33,19 @@ export const userSlice = createSlice({
 
 	},
 	extraReducers: {
-		[getUser.pending]: (state) => {
+		[getUserAuth.pending]: (state) => {
 			state.loading = true
 		},
-		[getUser.fulfilled]: (state, action) => {
+		[getUserAuth.fulfilled]: (state) => {
 			state.loading = false
 		},
-		[getUser.rejected]: (e) => { console.log('rejected', e) }
+		[getUserAuth.rejected]: (e) => { console.log('rejected', e) }
 
 	}
 })
 
 
-export const { setUser, logout } = userSlice.actions
+export const { setUserAuth, logout } = userSlice.actions
 
 
 

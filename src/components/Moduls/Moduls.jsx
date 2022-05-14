@@ -8,9 +8,9 @@ const Moduls = () => {
 	return (
 		<Layout>
 			<Content >
-				<div className={'content'}>
+				<div className={s.moduls__content}>
 					<PageHeader
-						className="site-page-header"
+						className={s.moduls__header}
 						title="Модули"
 						extra={[
 							<Button key="1" type="primary">
@@ -21,7 +21,7 @@ const Moduls = () => {
 					<div className={s.block}>
 						{
 							Array(5).fill(null).map((i, id) => (
-								<ModuleCart key={id} title={'htekd'} />
+								<ModuleCart key={id} title={'HTML/CSS'} />
 							))
 						}
 					</div>
