@@ -85,7 +85,7 @@ const Sider = () => {
 				<div className="sider__menus">
 					{
 						Array(2).fill(null).map((item, key) => {
-							console.log('key', key, key === 0)
+							// console.log('key', key, key === 0)
 							return <Menu
 								key={key}
 								onClick={onClick}

@@ -1,73 +1,371 @@
 import React from 'react'
-import { Table, Tag, Space } from 'antd'
-import { Link } from 'react-router-dom';
-import { useGetUsersQuery, useGetModulesQuery } from '../../redux/reducers/usersApi';
+import { Table, Tag, Space, Typography, Popconfirm, Form, Input } from 'antd'
+// import { Link } from 'react-router-dom';
+import { useGetUsersQuery, useGetModulesQuery, useEditUserMutation } from '../../redux/reducers/usersApi';
 import { useDispatch } from 'react-redux';
+import Highlighter from "react-highlight-words";
 import { getUsersFullData } from '../../redux/reducers/usersSlice';
 
-// const modules = ['JS', 'Node', 'Базы данных', 'HTML/CSS', 'React',]
+import './Table.less'
+import UserInfo from '../UserInfo/UserInfo';
+const { Link } = Typography;
 
-const columns = [
-	{
-		title: 'Имя Фамилия',
-		// dataIndex: 'firstName',
-		key: 'id',
-		editable: true,
-		render: (_, item,) => {
-			// console.log(_, item)
-			return <Link key={item.id} to={':id'}>{item.firstName + ' ' + item.lastName}</Link>
+const EditableCell = ({
+	editing,
+	dataIndex,
+	title,
+	record,
+	index,
+	children,
+	...restProps
+}) => {
+	const [fullName, setFullName] = React.useState({
+		value: record?.firstName + ' ' + record?.lastName
+	});
+
+	const customValidate = ({ target }) => {
+		console.log(target.value)
+		console.log(/^\s*[A-ZА-Я]{1}[a-zа-яё]+(?:\s+[A-ZА-Я]{1}[a-zа-яё]+)\s*$/.test(target.value))
+		return /^\s*[A-ZА-Я]{1}[a-zа-яё]+(?:\s+[A-ZА-Я]{1}[a-zа-яё]+)\s*$/.test(target.value)
+			? ({ validateStatus: 'success', errorMsg: null })
+			: ({
+				validateStatus: 'error',
+				errorMsg: `Пожалуйста введите Имя и Фамилию через пробел с "Б"ольшой буквы!`
+			})
+
+	}
+
+	const onValueChange = (value) => {
+		console.log(value)
+		setFullName({ ...customValidate(value), value })
+	}
+
+	// console.log('dataI', dataIndex, title, index, children, editing, record, restProps)
+	return (
+		<td {...restProps}>
+			{editing ? (
+				<Form.Item
+					name={'fullName'}
+					validateStatus={fullName.validateStatus}
+					help={fullName.errorMsg}
+					style={{
+						margin: 0,
+					}}
+					rules={[
+						{
+							required: true,
+							message: `Пожалуйста введите ${title} через пробел!`,
+						},
+					]}
+				>
+					<Input
+						onChange={onValueChange}
+					/>
+				</Form.Item>
+			) : (
+				children
+			)
+			}
+		</td >
+	);
+};
+
+
+
+
+
+
+const CustomTable = ({ onChanger, getFilter, searchVal }) => {
+	console.log(searchVal)
+	const { data: users, isLoading } = useGetUsersQuery()
+	const { data: mod } = useGetModulesQuery()
+	const [modules, setMod] = React.useState(null)
+	const [editUser, { data: resUser }] = useEditUserMutation()
+
+	const [form] = Form.useForm();
+	const [editingKey, setEditingKey] = React.useState('');
+	const [filterInfo, setFilterInfo] = React.useState({});
+
+	// React.useEffect(() => {
+	// setMod(mod)
+	// if (Array.isArray(mod)) {
+	// 	const moduls = mod.map(({ title }) => ({ text: title, value: title }))
+	// 	console.log('Сравнение', columns[1].filters === moduls)
+	// 	// console.log('Сравнение', columns[1].filters === moduls)
+
+	// 	columns[1].filters = moduls
+	// columns = [
+	// 	...columns,
+	// 	columns[1] = {
+	// 		...columns[1],
+	// 		filters: moduls
+	// 	}
+	// ]
+	// }
+	// const moduls = mod && mod.map(({ title }) => ({ text: title, value: title }))
+	// console.log('Сравнение', columns[1].filters === moduls)
+	// columns[1].filters = moduls
+	// // columns[1] = { ...columns[1], filters: moduls }
+	// columns = [...columns]
+	// console.log('columns', columns)
+	// console.log('изменился', mod)
+	// }, [mod])
+	console.log('mod', mod)
+	// console.log('users', users)
+
+	const isEditing = (record) => +record.key === +editingKey;
+
+	const edit = (record) => {
+		form.setFieldsValue({
+			fullName: `${record.firstName} ${record.lastName}`,
+			...record,
+		});
+		setEditingKey(record.key);
+	};
+	const cancel = () => {
+		setEditingKey('');
+	};
+
+	const save = async (key) => {
+		try {
+			const { fullName } = await form.validateFields();
+			const [firstName, lastName] = fullName.split(' ')
+			console.log(fullName)
+			console.log(firstName, lastName)
+			const newData = [...users];
+			const index = newData.findIndex((item) => key === item.key);
+			console.log('oldNewData', newData)
+			console.log('index', index)
+			if (index > -1) {
+				const item = newData[index];
+				console.log('item', item, {
+					login: item.login,
+					password: item.password,
+					isAdmin: item.isAdmin,
+					module: item.module,
+					firstName,
+					lastName
+				})
+				console.log('-------------------------------', item.id)
+				editUser({
+					id: item.id,
+					login: item.login,
+					password: item.password,
+					isAdmin: item.isAdmin,
+					module: item.module,
+					firstName,
+					lastName
+				}, item.id)
+				// newData.splice(index, 1, { ...item, firstName, lastName });
+				//  setData(newData);
+				setEditingKey('');
+			} else {
+				// newData.push(row);
+				// setData(newData);
+				setEditingKey('');
+			}
+			// console.log('row', row)
+			console.log('newData', newData)
+		} catch (errInfo) {
+			console.log('Validate Failed:', errInfo);
 		}
-	},
-	{
-		title: 'Название модуля',
-		key: 'module',
-		dataIndex: 'module',
-		// editable: true,
-		onFilter: (value, record) => {
-			console.log(value, record)
-			return record.module?.title === value
+	};
+
+	const columns = [
+		{
+			title: 'Имя Фамилия',
+			// dataIndex: ['firstName'],
+			id: 'id',
+			filteredValue: searchVal || null,
+
+			onFilter: (value, record) => {
+				return (record.firstName + record.lastName).toLowerCase().indexOf(value.toLowerCase()) >= 0
+			},
+			render: (_, item,) => {
+				console.log('swarch',
+					//  _, 
+					item,
+					// searchVal
+				)
+				const telegram = item.login.split('@')[0]
+				return searchVal.length > 0 ?
+
+					(<Link key={item.id} href={`https://t.me/${telegram}`} target="_blank">
+
+						<Highlighter
+							highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+							searchWords={searchVal}
+							autoEscape
+							textToHighlight={item.firstName + ' ' + item.lastName}
+						/>
+					</Link>
+
+					) : (
+						<>
+							{item.firstName + ' ' + item.lastName}
+						</>
+
+
+					)
+			},
+
+			editable: true,
 		},
-		render: (module, user,) => {
-			// console.log(module, user)
-			return <>
-				{
-					module &&
-					<Tag color={module.color} key={user.key}>
-						{module.title}
-					</Tag>
+		{
+			title: 'Название модуля',
+			key: 'module',
+			dataIndex: 'module',
+			filteredValue: filterInfo.module || null,
+			onFilter: (value, record) => {
+				console.log('filter', value, record)
+				console.log('есть модуль?', record.module?.title === value)
+				return record.module?.title === value
+			},
+			render: (module, user) => {
+				// console.log(module, user.firstName)
+				const { color, title } = module ?? {}
+
+				const moduleColor = color === '#0000FF' ?
+					'blue' : color === '#FFFF00' ?
+						'purple' : color === '#EEDF78' ?
+							'grey' : color === '#CA8463' ?
+								'orange' : color === '#B0CC8A' ?
+									'green' : color
+				return <>
+					{
+						// module &&
+						<Tag color={moduleColor} key={user.key}>
+							{title}
+						</Tag>
+					}
+				</>
+
+
+			},
+		},
+		{
+			title: 'Дата старта',
+			key: 'date',
+			dataIndex: 'createdAt',
+			defaultSortOrder: 'ascend',
+			filteredValue: {},
+			showSorterTooltip: false,//{ title: 'Сортировать по дате старта' },
+			sorter: (a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt),
+			render: strDate => {
+				const getCurDate = (date) => date < 10 ? `0${date}` : date
+				const date = new Date(strDate)
+				return <p>{getCurDate(date.getDate())}.{getCurDate(date.getMonth() + 1)}.{date.getFullYear()}</p>
+			}
+		},
+		{
+			title: 'Действие',
+			key: 'action',
+			filteredValue: {},
+			render: (text, record, data) => {
+				// console.log('text', text)
+				// console.log('record', record)
+				const editable = isEditing(record);
+				// console.log('editable', record.firstName, editable)
+				return (
+					<Space
+						className={'action'}
+						size="middle">
+						<UserInfo
+							{...record}
+						/>
+
+						{
+							editable ?
+								(
+									<span>
+										<Typography.Link
+											onClick={() => save(record.key)}
+											style={{
+												marginRight: 8,
+											}}
+										>
+											Сохранить
+										</Typography.Link>
+										<Popconfirm title="Действительно Отмена?"
+											onConfirm={cancel}
+										>
+											<a>Отмена</a>
+										</Popconfirm>
+									</span>
+								) : (
+									<Typography.Link
+										disabled={editingKey !== ''}
+										onClick={() => edit(record)}>
+										Изменить
+									</Typography.Link>
+								)
+
+						}
+					</Space>
+
+				)
+			},
+		},
+	];
+
+	const mergedColumns = columns.map((col) => {
+		if (Array.isArray(mod) && col.dataIndex === 'module') {
+			const moduls = mod.map(({ title }) => ({ text: title, value: title }))
+			console.log('Сравнение', columns[1].filters === moduls)
+			return {
+				...col,
+				filters: moduls
+			}
+			// console.log('Сравнение', columns[1].filters === moduls)
+		}
+		if (!col.editable) {
+			return col;
+		}
+
+		return {
+			...col,
+			onCell: (record, rowIndex) => {
+				return {
+					record,
+					dataIndex: col.dataIndex,
+					title: col.title,
+					editing: isEditing(record),
 				}
-			</>
+			},
+		};
+	});
+	// console.log('mergedColumns', mergedColumns)
+	// console.log('form', form)
+	const onCh = (pagination, filters, sorter, extra) => {
+		console.log('Various parameters', pagination, filters, sorter, extra);
+		setFilterInfo(filters)
+	}
+	return (
+		<>
+			{
+				// isLoading ? <h1>Loading</h1> :
+				<Form form={form} component={false}>
+					<Table
+						// bordered={false}
+						onChange={onCh}
+						components={{
+							body: {
+								cell: EditableCell,
+							},
+						}}
+						loading={isLoading}
+						columns={mergedColumns}
+						// columns={columns}
+						dataSource={users}
+					// scroll={{ y: '60vh' }}
+					/>
+				</Form>
+			}
+		</>
+	)
+}
 
-
-		},
-	},
-	{
-		title: 'Дата старта',
-		key: 'date',
-		dataIndex: 'createdAt',
-		defaultSortOrder: 'ascend',
-		// showSorterTooltip: (e) => console.log(e),//{ title: 'Сортировать по дате старта' },
-		sorter: (a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt),
-		render: strDate => {
-			const getCurDate = (date) => date < 10 ? `0${date}` : date
-			const date = new Date(strDate)
-			return <p>{getCurDate(date.getDate())}.{getCurDate(date.getMonth() + 1)}.{date.getFullYear()}</p>
-		}
-	},
-	{
-		title: 'Действие',
-		key: 'action',
-		render: (text, record, data) => {
-			// console.log('text', text)
-			// console.log('record', record)
-			return <Space size="middle">
-				<Link to={':dd'}>Прогресс</Link>
-				<Link to={'ff'}>Изменить</Link>
-			</Space>
-		},
-	},
-];
-
+export default CustomTable
 const dataaaa = [
 	{
 		key: '1',
@@ -197,56 +495,6 @@ const dataaaa = [
 	},
 
 ];
-
-
-const CustomTable = () => {
-
-	// const dispatch = useDispatch()
-	// const { data, isLoading } = useGetUsersFullQuery()
-	const { data: users, isLoading } = useGetUsersQuery()
-	// const users = useGetUsersQuery()
-	const { data: mod } = useGetModulesQuery()
-	console.log(mod)
-	React.useEffect(() => {
-
-		columns[1].filters = mod && mod.map(({ title }) => ({ text: title, value: title }))
-	}, [mod])
-	// window.q = arr
-	// React.useEffect(() => {
-	// console.log('use-----', arr)
-	// arr && arr.then(res => console.log('thenres', console.log(res)))
-	// }, [arr])
-	console.log(users)
-	// console.log('useget', datas)
-	// const { data: data2, isLoading: isLoading2 } = useGetUserQuery(82)
-	// const usersDataModule = data.map( i => useGetUserQuery(i.id))
-	// React.useEffect(() => {
-	// try {
-	// const useGetUsersFullModule = data.map(i => dispatch(useGetUserQuery(i.id)))
-	// Promise.all[
-
-	// ].then(res => {
-	// 	console.log(res)
-	// })
-	// } catch (error) {
-	// console.log(error)
-	// }
-	// }, [])
-
-	// console.log(data, data2)
-	// console.log(isLoading, isLoading2)
-	return (
-		<>
-			{
-				isLoading ? <h1>Loading</h1> :
-					<Table columns={columns} dataSource={users} scroll={{ y: '60vh' }} />
-			}
-		</>
-	)
-}
-
-export default CustomTable
-
 
 
 

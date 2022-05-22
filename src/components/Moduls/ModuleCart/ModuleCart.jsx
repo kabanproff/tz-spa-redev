@@ -2,7 +2,6 @@ import React from 'react'
 import { Card, Badge, Space } from 'antd'
 import { EditOutlined, CloseOutlined } from '@ant-design/icons';
 import s from './ModuleCart.module.less'
-import { Typography } from 'antd';
 const { Meta } = Card;
 
 
@@ -11,7 +10,7 @@ const ModuleCart = ({ title, color }) => {
 	return (
 		<Badge.Ribbon
 			className={s.budge}
-			style={{ color: color }}
+			style={{ background: color, color: color }}
 		>
 			<Card
 				headStyle={{
