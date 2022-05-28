@@ -7,6 +7,7 @@ import ProForm, {
 } from '@ant-design/pro-form';
 
 import CheckboxColor from './CheckboxColor';
+import { useAddModuleMutation } from '../../redux/reducers/modulesApi';
 
 // import { useAddUserMutation, useGetModulesQuery } from '../../../redux/reducers/usersApi';
 
@@ -29,41 +30,24 @@ const AddModule = ({
 	// const { data: mod } = useGetModulesQuery()
 	// const [addUser, addUserresp] = useAddUserMutation()
 	// const [addUser, addUserresp] = useAddUserMutation()
-
+	const [addModule, addModuleResp] = useAddModuleMutation()
+	const [selectedColor, setSelectedColor] = React.useState('#fff')
+	console.log(selectedColor)
 	console.log('validator',
 		values,
 		errors,
-		// handleChange,
-		// handleSubmit,
 		dirty,
-		// visible,
-		// onCancel
+
 	)
-	//   const showModal = () => {
-	//     setVisible(true);
-	//   };
 
-	// const handleAddModule = async (user) => {
-	// 	const { fullName, instagram, telegram, module, login, } = user
-	// 	console.log('ww', user)
-	// 	const [firstName, lastName] = fullName.trim().split(' ').filter(i => i)
-	// 	const newUser = { firstName, lastName, instagram, telegram, moduleId: module, login, isAdmin: false, password: values.password }
-	// 	console.log(firstName, lastName)
-	// 	// await addUser(newUser).unwrap()
-	// 	// await addUser(newUser).unwrap()
+	const handleAddModule = async (module) => {
 
-	// 	// console.log(addUserresp)
-	// 	message.success('succes');
-	// 	return true
+		await addModule({ title: module.title, color: selectedColor }).unwrap()
+		console.log('addModuleResp', addModuleResp)
 
-	// };
+		message.success('succes');
+		return true
 
-	// const handleCancel = () => {
-	// 	console.log('Clicked cancel button');
-	// 	setVisible(false);
-	// };
-	const onFinish = (values) => {
-		console.log('Received values of form: ', values);
 	};
 
 	return (
@@ -83,11 +67,11 @@ const AddModule = ({
 					okText: 'Готово',
 					cancelText: 'Отмена'
 				}}
-			// onFinish={handleAddUser}
+				onFinish={handleAddModule}
 			>
 				<ProFormText
 
-					// name='fullName'
+					name='title'
 					label="Название:"
 					// onChange={handleChange}
 					// validateStatus={
@@ -98,7 +82,7 @@ const AddModule = ({
 					hasFeedback
 					placeholder=''
 				/>
-				<CheckboxColor />
+				<CheckboxColor selected={setSelectedColor} />
 			</ModalForm>
 		</>
 	);

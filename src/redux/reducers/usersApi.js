@@ -1,9 +1,8 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { emptySplitApi } from "./emptySplitApi"
 
-export const usersApi = createApi({
+export const usersApi = emptySplitApi.injectEndpoints({
 	reducerPath: 'usersApi',
 	tagTypes: ['Users'],
-	baseQuery: fetchBaseQuery({ baseUrl: 'https://typ-back.herokuapp.com/api/' }),
 	endpoints: (build) => ({
 		getUsersFull: build.query({
 			query: () => 'users/full',
@@ -42,7 +41,11 @@ export const usersApi = createApi({
 			]
 		}),
 		getModules: build.query({
-			query: () => 'modules'
+			query: () => 'modules',
+			providesTags: (results) => [
+				'Users',
+				...results.map(({ id }) => ({ type: 'Users', id }))
+			]
 		}),
 		editUser: build.mutation({
 			query: (user, id) => {

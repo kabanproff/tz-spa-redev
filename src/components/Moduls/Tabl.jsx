@@ -1,181 +1,89 @@
-import React, { useState } from 'react';
-import { Table, Input, InputNumber, Popconfirm, Form, Typography } from 'antd';
-const originData = [];
+import { EllipsisOutlined } from '@ant-design/icons';
+import { ProCard } from '@ant-design/pro-components';
+import { PageContainer } from '@ant-design/pro-layout';
+import { Button, Dropdown, Menu } from 'antd';
+import React from 'react';
 
-for (let i = 0; i < 100; i++) {
-	originData.push({
-		key: i.toString(),
-		name: `Edrward ${i}`,
-		age: 32,
-		address: `London Park no. ${i}`,
-	});
-}
-
-const EditableCell = ({
-	editing,
-	dataIndex,
-	title,
-	inputType,
-	record,
-	index,
-	children,
-	...restProps
-}) => {
-	const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-	console.log('children', editing,
-		dataIndex,
-		title,
-		inputType,
-		record,
-		index,
-		children,
-		restProps)
-	return (
-		<td {...restProps}>
-			{editing ? (
-				<Form.Item
-					name={dataIndex}
-					style={{
-						margin: 0,
-					}}
-					rules={[
+export default () => (
+	<div
+		style={{
+			background: '#F5F7FA',
+		}}
+	>
+		<PageContainer
+			header={{
+				title: '页面标题',
+				ghost: true,
+				breadcrumb: {
+					routes: [
 						{
-							required: true,
-							message: `Please Input ${title}!`,
+							path: '',
+							breadcrumbName: '一级页面',
 						},
-					]}
-				>
-					{inputNode}
-				</Form.Item>
-			) : (
-				children
-			)}
-		</td>
-	);
-};
-
-const EditableTable = () => {
-	const [form] = Form.useForm();
-	const [data, setData] = useState(originData);
-	const [editingKey, setEditingKey] = useState('');
-
-	const isEditing = (record) => record.key === editingKey;
-
-	const edit = (record) => {
-		form.setFieldsValue({
-			name: '',
-			age: '',
-			address: '',
-			...record,
-		});
-		setEditingKey(record.key);
-	};
-
-	const cancel = () => {
-		setEditingKey('');
-	};
-
-	const save = async (key) => {
-		try {
-			const row = await form.validateFields();
-			const newData = [...data];
-			const index = newData.findIndex((item) => key === item.key);
-
-			if (index > -1) {
-				const item = newData[index];
-				newData.splice(index, 1, { ...item, ...row });
-				setData(newData);
-				setEditingKey('');
-			} else {
-				newData.push(row);
-				setData(newData);
-				setEditingKey('');
-			}
-		} catch (errInfo) {
-			console.log('Validate Failed:', errInfo);
-		}
-	};
-
-	const columns = [
-		{
-			title: 'name',
-			dataIndex: 'name',
-			width: '25%',
-			editable: true,
-		},
-		{
-			title: 'age',
-			dataIndex: 'age',
-			width: '15%',
-			editable: true,
-		},
-		{
-			title: 'address',
-			dataIndex: 'address',
-			width: '40%',
-			editable: true,
-		},
-		{
-			title: 'operation',
-			dataIndex: 'operation',
-			render: (_, record) => {
-				const editable = isEditing(record);
-				return editable ? (
-					<span>
-						<Typography.Link
-							onClick={() => save(record.key)}
-							style={{
-								marginRight: 8,
-							}}
-						>
-							Save
-						</Typography.Link>
-						<Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-							<a>Cancel</a>
-						</Popconfirm>
-					</span>
-				) : (
-					<Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
-						Edit
-					</Typography.Link>
-				);
-			},
-		},
-	];
-	const mergedColumns = columns.map((col) => {
-		if (!col.editable) {
-			return col;
-		}
-
-		return {
-			...col,
-			onCell: (record) => ({
-				record,
-				inputType: col.dataIndex === 'age' ? 'number' : 'text',
-				dataIndex: col.dataIndex,
-				title: col.title,
-				editing: isEditing(record),
-			}),
-		};
-	});
-	return (
-		<Form form={form} component={false}>
-			<Table
-				components={{
-					body: {
-						cell: EditableCell,
-					},
-				}}
-				bordered
-				dataSource={data}
-				columns={mergedColumns}
-				rowClassName="editable-row"
-				pagination={{
-					onChange: cancel,
-				}}
-			/>
-		</Form>
-	);
-};
-
-export default () => <EditableTable />;
+						{
+							path: '',
+							breadcrumbName: '二级页面',
+						},
+						{
+							path: '',
+							breadcrumbName: '当前页面',
+						},
+					],
+				},
+				extra: [
+					<Button key="1">次要按钮</Button>,
+					<Button key="2">次要按钮</Button>,
+					<Button key="3" type="primary">
+						主要按钮
+					</Button>,
+					<Dropdown
+						key="dropdown"
+						trigger={['click']}
+						overlay={
+							<Menu>
+								<Menu.Item key="1">下拉菜单</Menu.Item>
+								<Menu.Item key="2">下拉菜单2</Menu.Item>
+								<Menu.Item key="3">下拉菜单3</Menu.Item>
+							</Menu>
+						}
+					>
+						<Button key="4" style={{ padding: '0 8px' }}>
+							<EllipsisOutlined />
+						</Button>
+					</Dropdown>,
+				],
+			}}
+			tabBarExtraContent="测试tabBarExtraContent"
+			tabList={[
+				{
+					tab: '基本信息',
+					key: 'base',
+					closable: false,
+				},
+				{
+					tab: '详细信息',
+					key: 'info',
+				},
+			]}
+			tabProps={{
+				type: 'editable-card',
+				hideAdd: true,
+				onEdit: (e, action) => console.log(e, action),
+			}}
+			footer={[
+				<Button key="3">重置</Button>,
+				<Button key="2" type="primary">
+					提交
+				</Button>,
+			]}
+		>
+			<ProCard direction="column" ghost gutter={[0, 16]}>
+				<ProCard style={{ height: 200 }} />
+				<ProCard gutter={16} ghost style={{ height: 200 }}>
+					<ProCard colSpan={16} />
+					<ProCard colSpan={8} />
+				</ProCard>
+			</ProCard>
+		</PageContainer>
+	</div>
+);

@@ -93,6 +93,8 @@ const Home = () => {
 
 				} />
 				<Route path={'moduls'} element={<Moduls />} />
+				{/* <Route path={'moduls'} element={<Tabl />} /> */}
+
 			</Routes>
 
 		</Layout >

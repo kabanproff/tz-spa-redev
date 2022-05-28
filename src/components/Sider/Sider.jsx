@@ -10,9 +10,9 @@ import { useDispatch } from 'react-redux';
 
 import Logo from '../Logo/Logo';
 import './Sider.less'
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { logout } from '../../redux/reducers/userAuthSlice';
-
+import { useAuth } from '../../hooks/useAuth';
 const { Sider: AntSider } = Layout;
 
 const items = [
@@ -39,9 +39,10 @@ const Sider = () => {
 
 	const [collapsed, setCollapsed] = React.useState(false)
 	const [isBroken, setIsBroken] = React.useState(false)
+	const { isAuth } = useAuth()
 	const dispatch = useDispatch()
 
-
+	console.log('isAuth', isAuth)
 	const onCollapse = (collapsed, type) => {
 		console.log(collapsed, type);
 		setCollapsed(collapsed);

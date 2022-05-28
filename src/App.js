@@ -12,6 +12,7 @@ import { useAuth } from './hooks/useAuth';
 function App() {
 	const { isAuth } = useAuth()
 	const navigate = useNavigate()
+	console.log('isAuth in app', isAuth)
 
 	React.useEffect(
 		() => {

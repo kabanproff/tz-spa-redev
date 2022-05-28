@@ -2,13 +2,13 @@ import React from 'react'
 import { Form, Input, Button, Typography } from 'antd';
 import { useDispatch } from 'react-redux';
 
-import { getUserAuth } from '../../../redux/reducers/userAuthSlice';
+import { setUserAuth } from '../../../redux/reducers/userAuthSlice';
 
 import AuthImage from '../../../assets/img/AuthorizeImage'
 
 import './AuthorizePage.less'
 import Logo from '../../Logo/Logo';
-import { useAuth } from '../../../hooks/useAuth';
+import { useAuthUserMutation } from '../../../redux/reducers/authApi';
 
 const { Title } = Typography;
 
@@ -19,10 +19,18 @@ function AuthorizePage({
 	handleSubmit,
 	dirty,
 }) {
+	const [authUser, { data, isLoading, isError, isSuccess }] = useAuthUserMutation()
+	console.log('useAuth', data, isLoading, isError, isSuccess)
 
 	const dispatch = useDispatch()
-	const { loading } = useAuth()
 
+
+	React.useEffect(() => {
+		if (isSuccess && data.token) {
+			dispatch(setUserAuth(data))
+		}
+
+	}, [isSuccess])
 	return (
 		<div className={'authorize-wrapper'}>
 			<header className={'header'}>
@@ -89,9 +97,10 @@ function AuthorizePage({
 							<Button
 								className="login-form-button"
 								type="primary"
-								loading={loading}
+								loading={isLoading}
 								onClick={() => {
-									dispatch(getUserAuth(values))
+									// dispatch(getUserAuth(values))
+									authUser(values)
 								}}
 
 							>

@@ -25,9 +25,7 @@ const AddUser = ({
 	...spread
 }) => {
 	console.log(spread)
-	//   const [visible, setVisible] = React.useState(false);
-	// const [confirmLoading, setConfirmLoading] = React.useState(false);
-	const [modalText, setModalText] = React.useState('Content of the modal');
+
 	const { data: mod } = useGetModulesQuery()
 	const [addUser, addUserresp] = useAddUserMutation()
 
@@ -51,7 +49,6 @@ const AddUser = ({
 		const newUser = { firstName, lastName, instagram, telegram, moduleId: module, login, isAdmin: false, password: values.password }
 		console.log(firstName, lastName)
 		await addUser(newUser).unwrap()
-		// await addUser(newUser).unwrap()
 
 		console.log(addUserresp)
 		message.success('succes');
@@ -59,10 +56,6 @@ const AddUser = ({
 
 	};
 
-	// const handleCancel = () => {
-	// 	console.log('Clicked cancel button');
-	// 	setVisible(false);
-	// };
 	const onFinish = (values) => {
 		console.log('Received values of form: ', values);
 	};

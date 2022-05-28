@@ -5,9 +5,7 @@ import ModuleCart from './ModuleCart/ModuleCart';
 import AddModule from '../AddModule/AddModule'
 import s from './Moduls.module.less'
 const { Content } = Layout;
-
 const Moduls = () => {
-
 	const { data: moduls } = useGetModulesQuery()
 	console.log("moduls", moduls)
 	return (
@@ -18,7 +16,7 @@ const Moduls = () => {
 						className={s.moduls__header}
 						title="Модули"
 						extra={[
-							<AddModule>Добавить Модуль</AddModule>
+							<AddModule key={'1'}>Добавить Модуль</AddModule>
 						]}
 					/>
 					<div className={s.block}>
@@ -29,7 +27,7 @@ const Moduls = () => {
 								))
 							) : (
 								moduls.map((i, id) => (
-									<ModuleCart key={id} title={i.title} color={i.color} />
+									<ModuleCart key={i.id} title={i.title} color={i.color} />
 								))
 							)
 						}

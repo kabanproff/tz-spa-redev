@@ -8,6 +8,7 @@ import { getUsersFullData } from '../../redux/reducers/usersSlice';
 
 import './Table.less'
 import UserInfo from '../UserInfo/UserInfo';
+import Module from './Module';
 const { Link } = Typography;
 
 const EditableCell = ({
@@ -156,12 +157,10 @@ const CustomTable = ({ onChanger, getFilter, searchVal }) => {
 					firstName,
 					lastName
 				}, item.id)
-				// newData.splice(index, 1, { ...item, firstName, lastName });
-				//  setData(newData);
+
 				setEditingKey('');
 			} else {
-				// newData.push(row);
-				// setData(newData);
+
 				setEditingKey('');
 			}
 			// console.log('row', row)
@@ -174,7 +173,7 @@ const CustomTable = ({ onChanger, getFilter, searchVal }) => {
 	const columns = [
 		{
 			title: 'Имя Фамилия',
-			// dataIndex: ['firstName'],
+
 			id: 'id',
 			filteredValue: searchVal || null,
 
@@ -185,7 +184,7 @@ const CustomTable = ({ onChanger, getFilter, searchVal }) => {
 				console.log('swarch',
 					//  _, 
 					item,
-					// searchVal
+
 				)
 				const telegram = item.login.split('@')[0]
 				return searchVal.length > 0 ?
@@ -221,27 +220,7 @@ const CustomTable = ({ onChanger, getFilter, searchVal }) => {
 				console.log('есть модуль?', record.module?.title === value)
 				return record.module?.title === value
 			},
-			render: (module, user) => {
-				// console.log(module, user.firstName)
-				const { color, title } = module ?? {}
-
-				const moduleColor = color === '#0000FF' ?
-					'blue' : color === '#FFFF00' ?
-						'purple' : color === '#EEDF78' ?
-							'grey' : color === '#CA8463' ?
-								'orange' : color === '#B0CC8A' ?
-									'green' : color
-				return <>
-					{
-						// module &&
-						<Tag color={moduleColor} key={user.key}>
-							{title}
-						</Tag>
-					}
-				</>
-
-
-			},
+			render: (p) => <Module {...p} />,
 		},
 		{
 			title: 'Дата старта',

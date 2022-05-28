@@ -2,20 +2,20 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios from 'axios'
 
 const initialState = {
-	loading: false,
-	isAuth: !!localStorage.getItem('token')
+	isAuth: !!localStorage.getItem('token'),
+	// loading: false
 }
 
-export const getUserAuth = createAsyncThunk(
-	'user/authUser',
-	async (values, { dispatch }) => {
-		const { data } = await axios.post('https://typ-back.herokuapp.com/api/auth/login', values)
-		dispatch(setUserAuth(data))
+// export const getUserAuth = createAsyncThunk(
+// 	'user/authUser',
+// 	async (values, { dispatch }) => {
+// 		const { data } = await axios.post('https://typ-back.herokuapp.com/api/auth/login', values)
+// 		dispatch(setUserAuth(data))
 
-	}
-)
+// 	}
+// )
 
-export const userSlice = createSlice({
+export const userAuthSlice = createSlice({
 	name: 'userAuth',
 	initialState,
 	reducers: {
@@ -32,23 +32,23 @@ export const userSlice = createSlice({
 		},
 
 	},
-	extraReducers: {
-		[getUserAuth.pending]: (state) => {
-			state.loading = true
-		},
-		[getUserAuth.fulfilled]: (state) => {
-			state.loading = false
-		},
-		[getUserAuth.rejected]: (e) => { console.log('rejected', e) }
+	// extraReducers: {
+	// 	[getUserAuth.pending]: (state) => {
+	// 		state.loading = true
+	// 	},
+	// 	[getUserAuth.fulfilled]: (state) => {
+	// 		state.loading = false
+	// 	},
+	// 	[getUserAuth.rejected]: (e) => { console.log('rejected', e) }
 
-	}
+	// }
 })
 
 
-export const { setUserAuth, logout } = userSlice.actions
+export const { setUserAuth, logout } = userAuthSlice.actions
 
 
 
-export default userSlice.reducer
+export default userAuthSlice.reducer
 
 
