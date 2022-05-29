@@ -1,10 +1,13 @@
 import React from 'react'
 import { Layout, Button, PageHeader } from 'antd';
-import { useGetModulesQuery } from '../../redux/reducers/usersApi';
+import { useGetModulesQuery } from '../../redux/reducers/modulesApi';
 import ModuleCart from './ModuleCart/ModuleCart';
 import AddModule from '../AddModule/AddModule'
+
 import s from './Moduls.module.less'
+
 const { Content } = Layout;
+
 const Moduls = () => {
 	const { data: moduls } = useGetModulesQuery()
 	console.log("moduls", moduls)

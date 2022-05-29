@@ -1,14 +1,14 @@
 import React from 'react'
-import { Table, Tag, Space, Typography, Popconfirm, Form, Input } from 'antd'
-// import { Link } from 'react-router-dom';
-import { useGetUsersQuery, useGetModulesQuery, useEditUserMutation } from '../../redux/reducers/usersApi';
-import { useDispatch } from 'react-redux';
-import Highlighter from "react-highlight-words";
-import { getUsersFullData } from '../../redux/reducers/usersSlice';
+import { Table, Spin, Space, Typography, Popconfirm, Form, Input } from 'antd'
+import { useEditUserMutation, useGetUsersFullQuery } from '../../redux/reducers/usersApi';
+import { useGetUsersModulesQuery } from '../../redux/reducers/usersModulesApi';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import './Table.less'
 import UserInfo from '../UserInfo/UserInfo';
-import Module from './Module';
+import Module from './UserModule';
+import UserFullName from './UserFullName';
+import { useGetModulesQuery } from '../../redux/reducers/modulesApi';
 const { Link } = Typography;
 
 const EditableCell = ({
@@ -18,14 +18,17 @@ const EditableCell = ({
 	record,
 	index,
 	children,
+	reNameLoading,
 	...restProps
 }) => {
 	const [fullName, setFullName] = React.useState({
 		value: record?.firstName + ' ' + record?.lastName
 	});
 
+
+
 	const customValidate = ({ target }) => {
-		console.log(target.value)
+		// console.log(target.value)
 		console.log(/^\s*[A-ZА-Я]{1}[a-zа-яё]+(?:\s+[A-ZА-Я]{1}[a-zа-яё]+)\s*$/.test(target.value))
 		return /^\s*[A-ZА-Я]{1}[a-zа-яё]+(?:\s+[A-ZА-Я]{1}[a-zа-яё]+)\s*$/.test(target.value)
 			? ({ validateStatus: 'success', errorMsg: null })
@@ -37,7 +40,7 @@ const EditableCell = ({
 	}
 
 	const onValueChange = (value) => {
-		console.log(value)
+		// console.log(value)
 		setFullName({ ...customValidate(value), value })
 	}
 
@@ -64,57 +67,39 @@ const EditableCell = ({
 					/>
 				</Form.Item>
 			) : (
-				children
+				<>
+					{children} {
+						reNameLoading && <Spin
+							indicator={
+								<LoadingOutlined
+									style={{ fontSize: 14, }}
+									spin
+								/>} />
+
+					}
+				</>
 			)
 			}
+
 		</td >
 	);
 };
 
 
-
-
-
-
-const CustomTable = ({ onChanger, getFilter, searchVal }) => {
-	console.log(searchVal)
-	const { data: users, isLoading } = useGetUsersQuery()
+const CustomTable = ({ searchVal }) => {
+	// console.log('searchval', searchVal)
+	const { data: modulsId, isLoading: loadModId } = useGetUsersModulesQuery()
+	const { data: users, isLoading } = useGetUsersFullQuery()
 	const { data: mod } = useGetModulesQuery()
-	const [modules, setMod] = React.useState(null)
-	const [editUser, { data: resUser }] = useEditUserMutation()
-
+	const [editUser, resoo] = useEditUserMutation()
 	const [form] = Form.useForm();
 	const [editingKey, setEditingKey] = React.useState('');
 	const [filterInfo, setFilterInfo] = React.useState({});
-
-	// React.useEffect(() => {
-	// setMod(mod)
-	// if (Array.isArray(mod)) {
-	// 	const moduls = mod.map(({ title }) => ({ text: title, value: title }))
-	// 	console.log('Сравнение', columns[1].filters === moduls)
-	// 	// console.log('Сравнение', columns[1].filters === moduls)
-
-	// 	columns[1].filters = moduls
-	// columns = [
-	// 	...columns,
-	// 	columns[1] = {
-	// 		...columns[1],
-	// 		filters: moduls
-	// 	}
-	// ]
-	// }
-	// const moduls = mod && mod.map(({ title }) => ({ text: title, value: title }))
-	// console.log('Сравнение', columns[1].filters === moduls)
-	// columns[1].filters = moduls
-	// // columns[1] = { ...columns[1], filters: moduls }
-	// columns = [...columns]
-	// console.log('columns', columns)
-	// console.log('изменился', mod)
-	// }, [mod])
-	console.log('mod', mod)
-	// console.log('users', users)
+	console.log('users,moduleId', users, modulsId)
+	const filterModule = (value, user) => modulsId.find(i => i.user_id === user.id)?.module_id === value
 
 	const isEditing = (record) => +record.key === +editingKey;
+	console.log('resoo', resoo, resoo.isLoading, resoo.isSuccess)
 
 	const edit = (record) => {
 		form.setFieldsValue({
@@ -157,6 +142,7 @@ const CustomTable = ({ onChanger, getFilter, searchVal }) => {
 					firstName,
 					lastName
 				}, item.id)
+				console.log('resoedito', resoo)
 
 				setEditingKey('');
 			} else {
@@ -173,41 +159,15 @@ const CustomTable = ({ onChanger, getFilter, searchVal }) => {
 	const columns = [
 		{
 			title: 'Имя Фамилия',
-
 			id: 'id',
 			filteredValue: searchVal || null,
-
 			onFilter: (value, record) => {
 				return (record.firstName + record.lastName).toLowerCase().indexOf(value.toLowerCase()) >= 0
 			},
-			render: (_, item,) => {
-				console.log('swarch',
-					//  _, 
-					item,
+			render: (user) => <>
+				<UserFullName searchVal={searchVal} {...user} />
 
-				)
-				const telegram = item.login.split('@')[0]
-				return searchVal.length > 0 ?
-
-					(<Link key={item.id} href={`https://t.me/${telegram}`} target="_blank">
-
-						<Highlighter
-							highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-							searchWords={searchVal}
-							autoEscape
-							textToHighlight={item.firstName + ' ' + item.lastName}
-						/>
-					</Link>
-
-					) : (
-						<>
-							{item.firstName + ' ' + item.lastName}
-						</>
-
-
-					)
-			},
-
+			</>,
 			editable: true,
 		},
 		{
@@ -215,12 +175,15 @@ const CustomTable = ({ onChanger, getFilter, searchVal }) => {
 			key: 'module',
 			dataIndex: 'module',
 			filteredValue: filterInfo.module || null,
-			onFilter: (value, record) => {
-				console.log('filter', value, record)
-				console.log('есть модуль?', record.module?.title === value)
-				return record.module?.title === value
-			},
-			render: (p) => <Module {...p} />,
+			onFilter: filterModule
+			// (value, record, a) => {
+
+			// 	console.log('filter', value, record, a)
+			// 	console.log('есть модуль?', record.module?.title === value)
+			// 	return record.module?.title === value
+			// }
+			,
+			render: (_, user, a) => { return <Module id={user.id} /> },
 		},
 		{
 			title: 'Дата старта',
@@ -289,11 +252,12 @@ const CustomTable = ({ onChanger, getFilter, searchVal }) => {
 
 	const mergedColumns = columns.map((col) => {
 		if (Array.isArray(mod) && col.dataIndex === 'module') {
-			const moduls = mod.map(({ title }) => ({ text: title, value: title }))
-			console.log('Сравнение', columns[1].filters === moduls)
+			const moduls = mod.map(({ title, id }) => ({ text: title, value: id }))
+			// console.log('Сравнение d mergetcol', columns[1].filters === moduls, moduls, col, col.onFilter)
 			return {
 				...col,
-				filters: moduls
+				filters: moduls,
+				// onFilter.bind(this, { ...arg, asd: 555 })
 			}
 			// console.log('Сравнение', columns[1].filters === moduls)
 		}
@@ -303,12 +267,13 @@ const CustomTable = ({ onChanger, getFilter, searchVal }) => {
 
 		return {
 			...col,
-			onCell: (record, rowIndex) => {
+			onCell: (record) => {
 				return {
 					record,
 					dataIndex: col.dataIndex,
 					title: col.title,
 					editing: isEditing(record),
+					reNameLoading: resoo.isLoading
 				}
 			},
 		};

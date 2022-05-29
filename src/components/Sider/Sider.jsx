@@ -42,14 +42,14 @@ const Sider = () => {
 	const { isAuth } = useAuth()
 	const dispatch = useDispatch()
 
-	console.log('isAuth', isAuth)
+	// console.log('isAuth', isAuth)
 	const onCollapse = (collapsed, type) => {
-		console.log(collapsed, type);
+		// console.log(collapsed, type);
 		setCollapsed(collapsed);
 	};
 
 	const onBroken = (broken) => {
-		console.log('broken', broken);
+		// console.log('broken', broken);
 		setIsBroken(broken)
 	}
 

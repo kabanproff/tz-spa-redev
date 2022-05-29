@@ -7,7 +7,8 @@ import ProForm, {
 	ProFormSelect,
 } from '@ant-design/pro-form';
 
-import { useAddUserMutation, useGetModulesQuery } from '../../../redux/reducers/usersApi';
+import { useAddUserMutation } from '../../../redux/reducers/usersApi';
+import { useGetModulesQuery } from '../../../redux/reducers/modulesApi';
 
 import './AddUser.less'
 // const { Option } = Select
@@ -24,20 +25,20 @@ const AddUser = ({
 	children,
 	...spread
 }) => {
-	console.log(spread)
+	// console.log('spread addUser',spread)
 
 	const { data: mod } = useGetModulesQuery()
 	const [addUser, addUserresp] = useAddUserMutation()
 
-	console.log('validator',
-		values,
-		errors,
-		// handleChange,
-		// handleSubmit,
-		dirty,
-		// visible,
-		// onCancel
-	)
+	// console.log('validator',
+	// values,
+	// errors,
+	// handleChange,
+	// handleSubmit,
+	// dirty,
+	// visible,
+	// onCancel
+	// )
 	//   const showModal = () => {
 	//     setVisible(true);
 	//   };
@@ -50,7 +51,7 @@ const AddUser = ({
 		console.log(firstName, lastName)
 		await addUser(newUser).unwrap()
 
-		console.log(addUserresp)
+		// console.log(addUserresp)
 		message.success('succes');
 		return true
 
@@ -59,7 +60,7 @@ const AddUser = ({
 	const onFinish = (values) => {
 		console.log('Received values of form: ', values);
 	};
-	console.log()
+
 	return (
 		<>
 			<ModalForm
