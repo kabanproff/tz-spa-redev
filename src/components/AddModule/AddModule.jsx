@@ -1,53 +1,19 @@
 import React from 'react'
-import { Modal, Button, Form, Input, Select, message } from 'antd';
-import ProForm, {
-	ModalForm,
-	ProFormText,
-
-} from '@ant-design/pro-form';
-
+import { Button, message } from 'antd';
+import { ModalForm, ProFormText } from '@ant-design/pro-form';
 import CheckboxColor from './CheckboxColor';
 import { useAddModuleMutation } from '../../redux/reducers/modulesApi';
 
-// import { useAddUserMutation, useGetModulesQuery } from '../../../redux/reducers/usersApi';
+const AddModule = ({ children }) => {
 
-// import './AddUser.less'
-// const { Option } = Select
-
-const AddModule = ({
-	isRegister,
-	values,
-	errors,
-	handleChange,
-	handleSubmit,
-	dirty,
-	visible,
-	onCancel,
-	children,
-	...spread
-}) => {
-	console.log(spread)
-	// const { data: mod } = useGetModulesQuery()
-	// const [addUser, addUserresp] = useAddUserMutation()
-	// const [addUser, addUserresp] = useAddUserMutation()
-	const [addModule, addModuleResp] = useAddModuleMutation()
+	const [addModule, { isSuccess, isError }] = useAddModuleMutation()
 	const [selectedColor, setSelectedColor] = React.useState('#fff')
-	console.log(selectedColor)
-	console.log('validator',
-		values,
-		errors,
-		dirty,
-
-	)
-
+	const getColor = (color) => setSelectedColor(color)
 	const handleAddModule = async (module) => {
-
 		await addModule({ title: module.title, color: selectedColor }).unwrap()
-		console.log('addModuleResp', addModuleResp)
-
-		message.success('succes');
+		if (isSuccess) message.success('success');
+		if (isError) message.error('error');
 		return true
-
 	};
 
 	return (
@@ -70,19 +36,24 @@ const AddModule = ({
 				onFinish={handleAddModule}
 			>
 				<ProFormText
-
 					name='title'
 					label="Название:"
-					// onChange={handleChange}
-					// validateStatus={
-					// 	!dirty ? ''
-					// 		: errors.fullName ? 'error' : 'success'
-					// }
-					// help={errors.fullName}///
+					rules={[
+						() => ({
+							validator(_, value) {
+								if (value && /[A-Za-z]+$/i.test(value)) return Promise.resolve()
+								return Promise.reject(new Error('Модуль не валиден! Только латиница!'));
+							},
+						}),
+						{
+							required: true,
+							message: 'Пожалуйста введите название Модуля!',
+						},
+					]}
 					hasFeedback
 					placeholder=''
 				/>
-				<CheckboxColor selected={setSelectedColor} />
+				<CheckboxColor getColor={getColor} />
 			</ModalForm>
 		</>
 	);

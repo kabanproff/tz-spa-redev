@@ -12,7 +12,6 @@ import { useAuth } from './hooks/useAuth';
 function App() {
 	const { isAuth } = useAuth()
 	const navigate = useNavigate()
-	// console.log('isAuth in app', isAuth)
 
 	React.useEffect(
 		() => {
@@ -20,12 +19,11 @@ function App() {
 		}, [isAuth])
 
 	return (
-		<div className="App">
+		<div className={"App"}>
 			<Routes>
 
 				<Route path={'/*'} element={!isAuth ? <Navigate to={'/authorization'} replace /> : <Home />} />
 				<Route path={'/authorization'} element={<AuthorizePage />} />
-
 
 				{/* <Route path={'/*'} element={<Home />} /> */}
 				{/* <Route path={'/authorization'} element={<AuthorizePage />} /> */}

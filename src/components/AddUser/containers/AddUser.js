@@ -39,11 +39,6 @@ export default withFormik({
 
 		return errors;
 	},
-	handleSubmit: e => {
-		console.log(e)
-	},
-	onCancel: e => {
-		console.log('can', e)
-	},
+
 	displayName: 'BasicForm',
 })(AddUser)

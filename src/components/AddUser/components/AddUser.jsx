@@ -1,6 +1,6 @@
 import React from 'react'
-import { Modal, Button, Form, Input, Select, message } from 'antd';
-import ProForm, {
+import { Button, message } from 'antd';
+import {
 	ModalForm,
 	ProFormText,
 	ProFormSelect,
@@ -18,19 +18,17 @@ const AddUser = (props) => {
 		errors,
 		handleChange,
 		dirty,
-		onCancel,
 		children,
-		resetForm,
-		handleReset,
-		initialValues
+		// resetForm,
+		// handleReset,
+		// initialValues
 	} = props
 	const { data: mod } = useGetModulesQuery()
 	const [addUser] = useAddUserMutation()
-	console.log('values', values, props, onCancel, values.fullName === '')
+	// console.log('values', values, props, onCancel, values.fullName === '')
 
 	React.useEffect(() => {
 		return () => {
-
 			console.log('===================unmount==============')
 		}
 	}, [])
@@ -60,7 +58,7 @@ const AddUser = (props) => {
 				autoFocusFirstInput
 				modalProps={{
 					onCancel: (e) => {
-						resetForm()
+						// resetForm()
 						console.log('run', e)
 					},
 					closable: false,
