@@ -62,7 +62,6 @@ const AddUser = (props) => {
 						console.log('run', e)
 					},
 					closable: false,
-					// preserve: false,
 					okText: 'Готово',
 					cancelText: 'Отмена'
 				}}

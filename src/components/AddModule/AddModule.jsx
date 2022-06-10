@@ -1,43 +1,66 @@
 import React from 'react'
-import { Button, message } from 'antd';
+import { Button, Input, Modal, Form, message } from 'antd';
 import { ModalForm, ProFormText } from '@ant-design/pro-form';
 import CheckboxColor from './CheckboxColor';
 import { useAddModuleMutation } from '../../redux/reducers/modulesApi';
+import InputModal from './InputModal';
 
-const AddModule = ({ children }) => {
-
-	const [addModule, { isSuccess, isError }] = useAddModuleMutation()
+const AddModule = ({ visible, onCreate, onCancel }) => {
+	// const [isModalVisible, setIsModalVisible] = React.useState(false)
 	const [selectedColor, setSelectedColor] = React.useState('#fff')
+	const [form] = Form.useForm();
 	const getColor = (color) => setSelectedColor(color)
-	const handleAddModule = async (module) => {
-		await addModule({ title: module.title, color: selectedColor }).unwrap()
-		if (isSuccess) message.success('success');
-		if (isError) message.error('error');
-		return true
+
+	// const handleAddModule = async (module) => {
+	// 	await addModule({ title: module.title, color: selectedColor }).unwrap()
+	// 	if (isSuccess) message.success('Модуль добавлен');
+	// 	if (isError) message.error('Ошибка добавления модуля');
+	// 	return true
+	// };
+	// const showModal = () => {
+	// 	setIsModalVisible(true);
+	// };
+
+	const handleOk = () => {
+		form
+			.validateFields()
+			.then((values) => {
+				form.resetFields();
+				onCreate(values);
+			})
+			.catch((info) => {
+				console.log('Validate Failed:', info);
+			});
+		// setIsModalVisible(false);
 	};
 
+	// const handleCancel = () => {
+	// 	setIsModalVisible(false);
+	// };
+
 	return (
-		<>
-			<ModalForm
-				title={children}
-				width={330}
-				trigger={
-					<Button type="primary">
-						{children}
-					</Button>
-				}
-				autoFocusFirstInput
-				modalProps={{
-					onCancel: () => console.log('run'),
-					closable: false,
-					okText: 'Готово',
-					cancelText: 'Отмена'
+
+
+		<Modal
+			title="Basic Modal"
+			okText={'Готово'}
+			cancelText={'Отмена'}
+			visible={visible}
+			onOk={handleOk}
+			onCancel={onCancel}
+		>
+			<Form
+				form={form}
+				layout="vertical"
+				name="form_in_modal"
+				initialValues={{
+					modifier: 'public',
 				}}
-				onFinish={handleAddModule}
 			>
-				<ProFormText
-					name='title'
-					label="Название:"
+				<Form.Item
+					name="title"
+					label="Title"
+					hasFeedback
 					rules={[
 						() => ({
 							validator(_, value) {
@@ -47,15 +70,19 @@ const AddModule = ({ children }) => {
 						}),
 						{
 							required: true,
-							message: 'Пожалуйста введите название Модуля!',
+							message: 'Please input the title of collection!',
 						},
 					]}
-					hasFeedback
-					placeholder=''
-				/>
-				<CheckboxColor getColor={getColor} />
-			</ModalForm>
-		</>
+				>
+					<Input />
+				</Form.Item>
+				<Form.Item name="color">
+					<CheckboxColor getColor={getColor} />
+				</Form.Item>
+			</Form>
+		</Modal>
+
+
 	);
 };
 

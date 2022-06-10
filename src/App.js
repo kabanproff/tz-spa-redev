@@ -18,6 +18,7 @@ function App() {
 			if (isAuth) navigate('/')
 		}, [isAuth])
 
+
 	return (
 		<div className={"App"}>
 			<Routes>

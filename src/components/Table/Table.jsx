@@ -24,15 +24,18 @@ const EditableCell = (props) => {
 		key,
 		...restProps
 	} = props
+
+	console.log(props)
+
 	const [fullName, setFullName] = React.useState({
 		value: record?.firstName + ' ' + record?.lastName
 	});
 
-	React.useEffect(() => {
-		setFullName({
-			value: record?.firstName + ' ' + record?.lastName
-		})
-	}, [editing])
+	// React.useEffect(() => {
+	// 	setFullName({
+	// 		value: record?.firstName + ' ' + record?.lastName
+	// 	})
+	// }, [editing])
 
 	const customValidate = ({ target }) => {
 		return /^\s*[A-ZА-Я]{1}[a-zа-яё]+(?:\s+[A-ZА-Я]{1}[a-zа-яё]+)\s*$/.test(target.value)
@@ -80,8 +83,7 @@ const EditableCell = (props) => {
 								/>} />
 					}
 				</>
-			)
-			}
+			)}
 		</td >
 	);
 };
@@ -89,7 +91,7 @@ const EditableCell = (props) => {
 
 const CustomTable = ({ searchVal }) => {
 
-	const { data: modulsId, isLoading: moduleIdLoading } = useGetUsersModulesQuery()
+	const { data: modulsId } = useGetUsersModulesQuery()
 	const { data: users, isLoading: usersLoading, isFetching } = useGetUsersFullQuery()
 	const { data: mod } = useGetModulesQuery()
 	const [editUser, { isLoading: renameLoading }] = useEditUserMutation()
@@ -170,7 +172,6 @@ const CustomTable = ({ searchVal }) => {
 			defaultSortOrder: 'ascend',
 			filteredValue: {},
 			showSorterTooltip: false,
-			//{ title: 'Сортировать по дате старта' },
 			sorter: (a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt),
 			render: strDate => <StartStudy strDate={strDate} />
 		},

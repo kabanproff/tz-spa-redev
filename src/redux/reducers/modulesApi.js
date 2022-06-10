@@ -28,9 +28,33 @@ export const modulesApi = emptySplitApi.injectEndpoints({
 			},
 			invalidatesTags: ['Modules']
 
-		})
+		}),
+		editModule: build.mutation({
+			query: ({ module, id }) => {
+				console.log(module, id)
+				return {
+					url: `modules/${id}`,
+					method: 'PUT',
+					body: module
+				}
+			},
+			invalidatesTags: ['Modules']
+		}),
+		deleteModule: build.mutation({
+			query: (id) => ({
+				url: `modules/${id}`,
+				method: 'DELETE',
+			}),
+			invalidatesTags: ['Modules']
+		}),
 	}),
-	overrideExisting: false,//конечная точка будет просто переопределена
+	overrideExisting: false,
 })
 
-export const { useGetModulesQuery, useAddModuleMutation, useGetModulesIdQuery } = modulesApi
+export const {
+	useGetModulesQuery,
+	useAddModuleMutation,
+	useGetModulesIdQuery,
+	useEditModuleMutation,
+	useDeleteModuleMutation
+} = modulesApi
