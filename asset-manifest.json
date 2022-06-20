@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/tz-spa-redev/static/css/main.f3b37286.css",
+    "main.js": "/tz-spa-redev/static/js/main.ae54fe44.js",
+    "index.html": "/tz-spa-redev/index.html",
+    "main.f3b37286.css.map": "/tz-spa-redev/static/css/main.f3b37286.css.map",
+    "main.ae54fe44.js.map": "/tz-spa-redev/static/js/main.ae54fe44.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f3b37286.css",
+    "static/js/main.ae54fe44.js"
+  ]
+}
