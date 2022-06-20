@@ -11,68 +11,58 @@ import { useGetModulesQuery } from '../../../redux/reducers/modulesApi';
 
 import './AddUser.less'
 
-const AddUser = (props) => {
-	const {
-		isRegister,
-		values,
-		errors,
-		handleChange,
-		dirty,
-		children,
-		// resetForm,
-		// handleReset,
-		// initialValues
-	} = props
-	const { data: mod } = useGetModulesQuery()
-	const [addUser] = useAddUserMutation()
-	// console.log('values', values, props, onCancel, values.fullName === '')
+const AddUser = ({
+	isRegister,
+	values,
+	errors,
+	handleChange,
+	dirty,
+	children, }) => {
 
-	React.useEffect(() => {
-		return () => {
-			console.log('===================unmount==============')
-		}
-	}, [])
+	const { data: mod } = useGetModulesQuery()
+	const [addUser, { isError }] = useAddUserMutation()
 
 	const handleAddUser = async (user) => {
+		const isErrors = Object.keys(errors).length
 		const { fullName, instagram, telegram, module, login, } = user
 		const [firstName, lastName] = fullName.trim().split(' ').filter(i => i)
 		const newUser = { firstName, lastName, instagram, telegram, moduleId: module, login, isAdmin: false, password: values.password }
-		console.log(firstName, lastName)
-		await addUser(newUser).unwrap()
-		message.success('succes');
-		return true
+
+		if (!isErrors) {
+			const user = await addUser(newUser).unwrap()
+			if (user.id && !isError) {
+				message.success('Пользователь добавлен');
+				return true
+			} else {
+				message.warning('Пользователь уже существует')
+				return false
+			}
+		}
+		message.error('Введены не все данные');
+		return false
 	};
 
 	return (
 		<>
 			<ModalForm
-				title="Добавить студента"
+				title={'Добавить студента'}
 				width={330}
-				// preserve={false}
-				// destroyOnClose
 				trigger={
-					<Button type="primary">
+					<Button type={'primary'}>
 						{children}
 					</Button>
 				}
 				autoFocusFirstInput
 				modalProps={{
-					onCancel: (e) => {
-						// resetForm()
-						console.log('run', e)
-					},
 					closable: false,
 					okText: 'Готово',
 					cancelText: 'Отмена'
 				}}
 				onFinish={handleAddUser}
-				string={{
-					preserve: false
-				}}
 			>
 				<ProFormText
-					name='fullName'
-					label="Имя Фамилия:"
+					name={'fullName'}
+					label={'Имя Фамилия:'}
 					initialValue={values.fullName}
 					onChange={handleChange}
 					validateStatus={
@@ -81,7 +71,7 @@ const AddUser = (props) => {
 					}
 					help={errors.fullName}
 					hasFeedback
-					placeholder=''
+					placeholder={''}
 
 				/>
 				{
@@ -93,9 +83,9 @@ const AddUser = (props) => {
 						}
 						hasFeedback
 						help={errors.password}
-						name='password'
-						label="Пароль:"
-						placeholder=''
+						name={'password'}
+						label={'Пароль:'}
+						placeholder={''}
 						onChange={handleChange}
 						initialValue={values.password}
 
@@ -112,9 +102,9 @@ const AddUser = (props) => {
 					onChange={handleChange}
 					initialValue={values.telegram}
 
-					name='telegram'
-					label="Telegram:"
-					placeholder=''
+					name={'telegram'}
+					label={'Telegram:'}
+					placeholder={''}
 				/>
 
 				<ProFormText
@@ -124,17 +114,17 @@ const AddUser = (props) => {
 					}
 					hasFeedback
 					help={errors.social}
-					name="instagram"
-					label="Instagram:"
-					placeholder=''
+					name={'instagram'}
+					label={'Instagram:'}
+					placeholder={''}
 					onChange={handleChange}
 					initialValue={values.instagram}
 
 				/>
 				<ProFormText
-					placeholder=''
-					name="login"
-					label="Mail:"
+					placeholder={''}
+					name={'login'}
+					label={'Mail:'}
 					validateStatus={
 						!dirty ? ''
 							: errors.mail ? 'error' : 'success'
@@ -148,8 +138,8 @@ const AddUser = (props) => {
 				/>
 				<ProFormSelect
 					initialValue={[21]}
-					name="module"
-					label="Модуль:"
+					name={'module'}
+					label={'Модуль:'}
 					options={mod && mod.map(i => ({ value: i.id, label: i.title }))}
 				/>
 			</ModalForm>

@@ -1,7 +1,6 @@
 import { emptySplitApi } from "./emptySplitApi";
 
 export const authApi = emptySplitApi.injectEndpoints({
-	// reducerPath: 'authApi',
 	endpoints: (build) => ({
 		authUser: build.mutation({
 			query: (body) => {
@@ -11,7 +10,6 @@ export const authApi = emptySplitApi.injectEndpoints({
 					body
 				}
 			},
-			// invalidatesTags: ['Auth'] 
 		})
 	})
 })

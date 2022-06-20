@@ -1,4 +1,4 @@
-import { emptySplitApi } from "./emptySplitApi"
+import { emptySplitApi } from './emptySplitApi'
 
 export const modulesApi = emptySplitApi.injectEndpoints({
 	reducerPath: 'modulesApi',
@@ -31,7 +31,6 @@ export const modulesApi = emptySplitApi.injectEndpoints({
 		}),
 		editModule: build.mutation({
 			query: ({ module, id }) => {
-				console.log(module, id)
 				return {
 					url: `modules/${id}`,
 					method: 'PUT',

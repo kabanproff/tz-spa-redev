@@ -1,10 +1,9 @@
 import { withFormik } from 'formik'
-
 import AuthorizePage from '../components/AuthorizePage'
 
 
 export default withFormik({
-	mapPropsToValues: () => ({ login: '', password: 'qqqqqQ1!' }),
+	mapPropsToValues: () => ({ login: 'kaban@lol.com', password: 'qqqqqQ1!' }),
 	validate: values => {
 		const errors = {};
 

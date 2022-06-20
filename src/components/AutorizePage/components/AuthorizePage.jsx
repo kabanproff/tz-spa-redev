@@ -1,14 +1,12 @@
 import React from 'react'
 import { Form, Input, Button, Typography } from 'antd';
+import { useAuthUserMutation } from '../../../redux/reducers/authApi';
 import { useDispatch } from 'react-redux';
-
 import { setUserAuth } from '../../../redux/reducers/userAuthSlice';
-
 import AuthImage from '../../../assets/img/AuthorizeImage'
+import Logo from '../../Logo/Logo';
 
 import './AuthorizePage.less'
-import Logo from '../../Logo/Logo';
-import { useAuthUserMutation } from '../../../redux/reducers/authApi';
 
 const { Title } = Typography;
 
@@ -19,18 +17,15 @@ function AuthorizePage({
 	handleSubmit,
 	dirty,
 }) {
-	const [authUser, { data, isLoading, isError, isSuccess }] = useAuthUserMutation()
-	console.log('useAuth', data, isLoading, isError, isSuccess)
-
+	const [authUser, { data, isLoading, isSuccess }] = useAuthUserMutation()
 	const dispatch = useDispatch()
-
 
 	React.useEffect(() => {
 		if (isSuccess && data.token) {
 			dispatch(setUserAuth(data))
 		}
-
 	}, [isSuccess])
+
 	return (
 		<div className={'authorize-wrapper'}>
 			<header className={'header'}>
@@ -42,13 +37,13 @@ function AuthorizePage({
 				<Title level={1}>Вход в личный кабинет</Title>
 				<div className={'wrapper__form'}>
 					<Form
-						name="normal_login"
-						className="login-form"
-						layout="vertical"
+						name={'normal_login'}
+						className={'login-form'}
+						layout={'vertical'}
 						onSubmit={handleSubmit}
 					>
 						<Form.Item
-							label="Логин:"
+							label={'Логин:'}
 							validateStatus={
 								!dirty ? ''
 									: errors.login ? 'error' : 'success'
@@ -57,13 +52,12 @@ function AuthorizePage({
 							help={errors.login}
 						>
 							<Input
-								name='login'
+								name={'login'}
 								value={values.login}
 								onChange={handleChange}
-								placeholder='E-Mail'
+								placeholder={'E-Mail'}
 							/>
 						</Form.Item>
-
 						<Form.Item
 							validateStatus={
 								!dirty ? ''
@@ -72,37 +66,23 @@ function AuthorizePage({
 							hasFeedback
 							help={errors.password}
 							className={'form__item-castom'}
-							label={
-								<>
-									<span>Пароль:</span>
-									<a className="login-form-forgot" href="#1">
-										Забыли пароль?
-									</a>
-								</>
-							}
-
+							label={<span>Пароль:</span>}
 						>
 							<Input.Password
-								name='password'
+								name={'password'}
 								onChange={handleChange}
 								value={values.password}
-								placeholder='Пароль'
-
+								placeholder={'Пароль'}
 							/>
 						</Form.Item>
-
-						<Form.Item
-
-						>
+						<Form.Item>
 							<Button
-								className="login-form-button"
-								type="primary"
+								className={'login-form-button'}
+								type={'primary'}
 								loading={isLoading}
 								onClick={() => {
-									// dispatch(getUserAuth(values))
 									authUser(values)
 								}}
-
 							>
 								Войти
 							</Button>
@@ -115,8 +95,6 @@ function AuthorizePage({
 			</div>
 		</div >
 	)
-
-
 };
 
 export default AuthorizePage

@@ -40,7 +40,7 @@ const Sider = () => {
 			width={215}
 			className={'sider'}
 			collapsible={isBroken}
-			breakpoint="lg"
+			breakpoint={'lg'}
 			onCollapse={onCollapse}
 			onBreakpoint={onBroken}
 		>
@@ -71,7 +71,6 @@ const Sider = () => {
 					/>
 				</div>
 			</div>
-
 		</AntSider>
 	)
 }

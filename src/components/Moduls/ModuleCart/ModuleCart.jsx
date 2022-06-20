@@ -1,18 +1,17 @@
 import React from 'react'
-import { Card, Badge, Input, Spin, Popconfirm, message } from 'antd'
-import { ProForm, ProFormText } from '@ant-design/pro-form';
-
+import { Card, Badge, Input, Spin, Form, Popconfirm, message } from 'antd'
 import { EditOutlined, CloseOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useEditModuleMutation, useDeleteModuleMutation } from '../../../redux/reducers/modulesApi';
 
 import s from './ModuleCart.module.less'
 
 const ModuleCart = ({ title, color, id }) => {
-	const [editing, setEditing] = React.useState(false)
 	const moduleRef = React.useRef()
+	const [editing, setEditing] = React.useState(false)
 	const [value, setValue] = React.useState(title)
 	const [saveModule, { isLoading: loadSave, isSuccess: successSave, isError: errorSave }] = useEditModuleMutation()
 	const [deleteModule, { isLoading: loadDelete, isError: errorDelete }] = useDeleteModuleMutation()
+	const [form] = Form.useForm();
 
 	React.useEffect(() => {
 		if (successSave) message.success('Модуль изменен')
@@ -27,21 +26,21 @@ const ModuleCart = ({ title, color, id }) => {
 		}
 	})
 
-	const handleChange = (e) => {
-		setValue(e.target.value)
-	}
 	const handleOutsideClick = (event) => {
-		console.log('ref', moduleRef)
 		const path = event.path || (event.composedPath && event.composedPath());
-		console.log(path.includes(moduleRef.current))
-		console.log('path', path)
 		if (editing && !path.includes(moduleRef.current)) {
 			edit()
 		}
 	}
 
-	const save = () => {
-		saveModule({ module: { title: value }, id: id })
+	const save = async () => {
+		if (form.getFieldError('module').length > 0) {
+			message.error('Не валидное имя')
+			return
+		}
+		const value = form.getFieldsValue().module
+		await saveModule({ module: { title: value }, id: id })
+		successSave && setValue(value)
 		setEditing(!editing)
 	}
 
@@ -68,8 +67,8 @@ const ModuleCart = ({ title, color, id }) => {
 			[
 				editing ?
 					<Popconfirm
-						key="edit"
-						title="Действительно Изменить?"
+						key={'edit'}
+						title={'Действительно Изменить?'}
 						onConfirm={save}
 						onCancel={edit}
 					>
@@ -77,10 +76,13 @@ const ModuleCart = ({ title, color, id }) => {
 					</Popconfirm>
 					:
 					<EditOutlined
-						key="edit"
+						key={'edit'}
 						onClick={edit}
 					/>,
-				<Popconfirm key="delete" title="Действительно Удалить?"
+				<Popconfirm
+					disabled={editing}
+					key={'delete'}
+					title={'Действительно Удалить?'}
 					onConfirm={del}
 				>
 					<CloseOutlined />
@@ -89,66 +91,56 @@ const ModuleCart = ({ title, color, id }) => {
 	}
 
 	return (
-		// <React.Fragment ref={moduleRef} >
 		<div ref={moduleRef} >
 			<Badge.Ribbon
 				className={s.budge}
-
 				style={{ background: color, color: color }}
 			>
 				<Card
 					headStyle={{
 						border: 0,
-						paddingTop: "7px",
-						width: '75%'
+						paddingTop: '7px',
+						height: '64px'
 					}}
 
 					className={s.card}
 					title={editing ?
 						<>
-
-							{/* <Input
-								onChange={handleChange}
-								autoFocus
-								onFocus={e => e.target.select()}
-								className={s.input}
-								value={value}
-								status={'error'}
-								addonAfter={'SFDG'}
-							/> */}
-							<ProForm
-								onValuesChange={handleChange}
+							<Form
+								form={form}
+								initialValues={{ module: value }}
 							>
-								<ProFormText
-									// name='title'
-									// label="Название:"
-									className={s.input}
-
+								<Form.Item
+									name={'module'}
 									rules={[
-										(e) => ({
+										{
 											validator(_, value) {
-												console.log(e, _, value)
-												if (value && /[A-Za-z]+$/i.test(value)) return Promise.resolve()
+												if (value && /[A-Za-z]+$/i.test(value) && /^\S*$/i.test(value)) return Promise.resolve()
 												return Promise.reject(new Error('Модуль не валиден! Только латиница!'));
 											},
-										}),
+										},
 										{
 											required: true,
-											message: 'Пожалуйста введите название Модуля!',
+											whitespace: true,
+											message: 'Введите название Модуля!',
 										},
 									]}
 									hasFeedback
-									placeholder=''
-								/>
-							</ProForm>
+								>
+									<Input
+										autoFocus
+										className={s.input}
+										value={value}
+									/>
+								</Form.Item>
+							</Form>
 						</>
-						: value}
+						: title}
 					actions={actions()}
 				>
 				</Card>
 			</Badge.Ribbon>
 		</div>
-		// </React.Fragment>
 	)
 }
 

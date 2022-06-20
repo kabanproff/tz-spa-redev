@@ -1,7 +1,8 @@
 import React from 'react';
-import { Col, Row, Statistic, Divider, Typography, Progress, Button, Timeline, message } from 'antd';
+import { Col, Row, Statistic, Divider, Typography, Progress, Timeline } from 'antd';
 import { DrawerForm } from '@ant-design/pro-form';
 import './UserInfo.less'
+
 const { Title, Link } = Typography
 
 export default ({ firstName, lastName, progress, createdAt }) => {
@@ -30,27 +31,27 @@ export default ({ firstName, lastName, progress, createdAt }) => {
 			</div>
 			<Divider />
 			<Row gutter={16}
-				align={"center"}
+				align={'center'}
 			>
 				<Col span={6}>
 					<Statistic
-						title="Колличество дней"
+						title={'Колличество дней'}
 						value={deadline}
 					/>
 				</Col>
 				<Col span={6}>
-					<Statistic title="Задачи" value={tasksComplete} suffix="/ 50" />
+					<Statistic title={'Задачи'} value={tasksComplete} suffix={'/ 50'} />
 				</Col>
 				<Col span={6}>
-					<Statistic title="Чек-лист" value={checkComplete} suffix="/ 5" />
+					<Statistic title={'Чек-лист'} value={checkComplete} suffix={'/ 5'} />
 				</Col>
 			</Row>
 			<Divider />
 			<Title level={2}>Шаги</Title>
 			<Divider />
-			<Timeline mode="alternate" >{
+			<Timeline mode={'alternate'} >{
 				progress.map(i => (
-					<Timeline.Item key={i.title} color={i.status ? "green" : "gray"}>{i.title}</Timeline.Item>
+					<Timeline.Item key={i.title} color={i.status ? 'green' : 'gray'}>{i.title}</Timeline.Item>
 				))
 			}
 			</Timeline>

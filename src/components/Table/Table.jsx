@@ -1,93 +1,11 @@
 import React from 'react'
-import { Table, Spin, Form, Input } from 'antd'
+import { Table, Form } from 'antd'
 import { useEditUserMutation, useGetUsersFullQuery } from '../../redux/reducers/usersApi';
 import { useGetUsersModulesQuery } from '../../redux/reducers/usersModulesApi';
-import { LoadingOutlined } from '@ant-design/icons';
+import { useGetModulesQuery } from '../../redux/reducers/modulesApi';
+import { UserModule, UserFullName, StartStudy, ActionCollumns, EditableCell } from './forTable'
 
 import './Table.less'
-import Module from './UserModule';
-import UserFullName from './UserFullName';
-import { useGetModulesQuery } from '../../redux/reducers/modulesApi';
-import StartStudy from './StartStudy';
-import ActionCollumns from './ActionCollumns';
-
-const EditableCell = (props) => {
-	const {
-		editing,
-		dataIndex,
-		title,
-		record,
-		index,
-		children,
-		reNameLoading,
-		id,
-		key,
-		...restProps
-	} = props
-
-	console.log(props)
-
-	const [fullName, setFullName] = React.useState({
-		value: record?.firstName + ' ' + record?.lastName
-	});
-
-	// React.useEffect(() => {
-	// 	setFullName({
-	// 		value: record?.firstName + ' ' + record?.lastName
-	// 	})
-	// }, [editing])
-
-	const customValidate = ({ target }) => {
-		return /^\s*[A-ZА-Я]{1}[a-zа-яё]+(?:\s+[A-ZА-Я]{1}[a-zа-яё]+)\s*$/.test(target.value)
-			? ({ validateStatus: 'success', errorMsg: null })
-			: ({
-				validateStatus: 'error',
-				errorMsg: `Пожалуйста введите Имя и Фамилию через пробел с "Б"ольшой буквы!`
-			})
-	}
-
-	const onValueChange = (value) => {
-		setFullName({ ...customValidate(value), value })
-	}
-
-	return (
-		<td
-			{...restProps}>
-			{editing ? (
-				<Form.Item
-					name={'fullName'}
-					validateStatus={fullName.validateStatus}
-					help={fullName.errorMsg}
-					style={{
-						margin: 0,
-					}}
-					rules={[
-						{
-							required: true,
-							message: `Пожалуйста введите ${title} через пробел!`,
-						},
-					]}
-				>
-					<Input
-						onChange={onValueChange}
-					/>
-				</Form.Item>
-			) : (
-				<>
-					{children} {
-						reNameLoading && <Spin
-							indicator={
-								<LoadingOutlined
-									style={{ fontSize: 14, }}
-									spin
-								/>} />
-					}
-				</>
-			)}
-		</td >
-	);
-};
-
 
 const CustomTable = ({ searchVal }) => {
 
@@ -163,7 +81,7 @@ const CustomTable = ({ searchVal }) => {
 			dataIndex: 'module',
 			filteredValue: filterInfo.module || null,
 			onFilter: filterModule,
-			render: (_, user) => <Module id={user.id} />,
+			render: (_, user) => <UserModule id={user.id} />,
 		},
 		{
 			title: 'Дата старта',

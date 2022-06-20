@@ -1,13 +1,11 @@
 import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom';
-import './App.css';
 import AuthorizePage from './components/AutorizePage';
 import Home from './components/Home/Home';
 import { useNavigate } from 'react-router-dom'
-
 import { useAuth } from './hooks/useAuth';
 
-
+import './App.css';
 
 function App() {
 	const { isAuth } = useAuth()
@@ -18,16 +16,11 @@ function App() {
 			if (isAuth) navigate('/')
 		}, [isAuth])
 
-
 	return (
 		<div className={"App"}>
 			<Routes>
-
 				<Route path={'/*'} element={!isAuth ? <Navigate to={'/authorization'} replace /> : <Home />} />
 				<Route path={'/authorization'} element={<AuthorizePage />} />
-
-				{/* <Route path={'/*'} element={<Home />} /> */}
-				{/* <Route path={'/authorization'} element={<AuthorizePage />} /> */}
 			</Routes>
 		</div>
 	);

@@ -1,8 +1,6 @@
 import React from 'react'
 import { Space, Typography, Popconfirm } from 'antd'
-
-import UserInfo from '../UserInfo/UserInfo';
-
+import UserInfo from '../../UserInfo/UserInfo';
 
 
 const ActionCollumns = ({ record, isEditing, editingKey, cancel, edit, save }) => {
@@ -31,7 +29,7 @@ const ActionCollumns = ({ record, isEditing, editingKey, cancel, edit, save }) =
 							<Popconfirm title="Действительно Отмена?"
 								onConfirm={cancel}
 							>
-								<a>Отмена</a>
+								<Typography.Link>Отмена</Typography.Link>
 							</Popconfirm>
 						</span>
 					) : (
@@ -41,10 +39,8 @@ const ActionCollumns = ({ record, isEditing, editingKey, cancel, edit, save }) =
 							Изменить
 						</Typography.Link>
 					)
-
 			}
 		</Space>
-
 	)
 }
 
